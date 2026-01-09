@@ -45,6 +45,13 @@ const blogPosts = [
         slug: "receiving-trademark-copyright-next"
     },
     {
+        title: "3 Cautionary Tales of Copyright Infringement",
+        summary: "What happens if you don't secure your copyright? Let's take a look at three cautionary tales of copyright infringement and the valuable lessons they offer.",
+        imageSrc: "/hero.png",
+        category: "Copyright",
+        slug: "3-cautionary-tales-copyright-infringement"
+    },
+    {
         title: "Trademark Engine Launches New Brand Identity",
         summary: "Trademark Engine is happy to visually introduce our new look and feel to our customers, industry partners, and community...",
         imageSrc: "/hero.png",
