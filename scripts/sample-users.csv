@@ -1,0 +1,5 @@
+email,name,password,role
+client1@example.com,Alice Johnson,password123,client
+client2@example.com,Bob Smith,password123,client
+client3@example.com,Carol Davis,password123,client
+admin2@example.com,Admin Two,adminpass456,admin
