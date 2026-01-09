@@ -18,7 +18,7 @@ export async function GET(request: Request) {
         });
 
         // Transform data for frontend
-        const usersWithCounts = users.map(user => ({
+        const usersWithCounts = users.map((user: typeof users[0]) => ({
             id: user.id,
             name: user.name || 'N/A',
             email: user.email,
