@@ -7,7 +7,7 @@ import BlogCard from "@/app/components/BlogCard";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
-// Mock Data
+// Mock Data — show only posts that have pages/content
 const blogPosts = [
     {
         title: "Top 10 Reasons Every Online Seller on Amazon, eBay, Etsy, and Other Marketplaces Should Trademark and Copyright their Brand",
@@ -59,49 +59,7 @@ const blogPosts = [
         slug: "tips-tricks-logo-instagram"
     },
     {
-        title: "Trademark Engine Launches New Brand Identity",
-        summary: "Trademark Engine is happy to visually introduce our new look and feel to our customers, industry partners, and community...",
-        imageSrc: "/hero.png",
-        category: "News",
-        slug: "trademark-engine-rebrand"
-    },
-    {
-        title: "Top 10 Ways to Use Visual Aids to Make Trademark Registration Easier",
-        summary: "It’s easier for humans to recognize and remember visuals. Visuals help customers recall your Trademark easily...",
-        imageSrc: "/hero.png",
-        category: "Trademark",
-        slug: "visual-aids-trademark"
-    },
-    {
-        title: "Why Should You Register Copyright?",
-        summary: "Copyright allows an owner of an creative work to control how it is used. It is the legal right that grants the creator...",
-        imageSrc: "/hero.png",
-        category: "Copyright",
-        slug: "why-register-copyright"
-    },
-    {
-        title: "Reaching Your Trademark or Copyright Goals",
-        summary: "Set goals that help to evaluate where your business is and where it is going. Write down steps leading to your...",
-        imageSrc: "/hero.png",
-        category: "Business",
-        slug: "reaching-trademark-goals"
-    },
-    {
-        title: "3 Cautionary Tales of Copyright Infringement",
-        summary: "What happens if you don't secure your copyright? Let's take a look at 3 cautionary tales of copyright infringement...",
-        imageSrc: "/hero.png",
-        category: "Copyright",
-        slug: "cautionary-tales-copyright"
-    },
-    {
-        title: "Tips to Protect Your Listings on Instagram",
-        summary: "Social media is a great tool for businesses to expand their reach. But it is also a place where your images can be stolen...",
-        imageSrc: "/hero.png",
-        category: "News",
-        slug: "protect-listings-instagram"
-    },
-    {
-        title: "How Long Does It Take to Register Your Trademark?",
+        title: "How Long Does Trademark Registration Take? — Timeline and Stages",
         summary: "One of the most common questions we get is how long does the process take. The answer depends on a few factors...",
         imageSrc: "/hero.png",
         category: "Trademark",

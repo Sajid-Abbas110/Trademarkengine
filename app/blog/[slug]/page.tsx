@@ -1,5 +1,3 @@
-"use client";
-
 import { Calendar, ArrowLeft, Share2 } from "lucide-react";
 import Link from "next/link";
 import Navbar from "@/app/components/Navbar";
@@ -554,8 +552,9 @@ const blogPosts: { [key: string]: any } = {
   }
 };
 
-export default function BlogPost({ params }: { params: { slug: string } }) {
-  const post = blogPosts[params.slug];
+export default async function BlogPost({ params }: { params: any }) {
+  const { slug } = await params;
+  const post = blogPosts[slug];
 
   if (!post) {
     return (
