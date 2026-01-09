@@ -1,11 +1,16 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import db from "@/lib/db";
 
+function resolveParams(maybePromise: any) {
+    return maybePromise && typeof maybePromise.then === "function" ? maybePromise : Promise.resolve(maybePromise);
+}
+
 export async function DELETE(
-    request: Request,
-    { params }: { params: { id: string } }
+    request: NextRequest,
+    context: any
 ) {
     try {
+        const params = await resolveParams(context.params);
         const { id } = params;
 
         // Check if user exists
@@ -36,10 +41,11 @@ export async function DELETE(
 }
 
 export async function PATCH(
-    request: Request,
-    { params }: { params: { id: string } }
+    request: NextRequest,
+    context: any
 ) {
     try {
+        const params = await resolveParams(context.params);
         const { id } = params;
         const body = await request.json();
         const { name, email, role } = body;
