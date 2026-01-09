@@ -38,6 +38,13 @@ const blogPosts = [
         slug: "top-5-reasons-copyright-work"
     },
     {
+        title: "Receiving Your Trademark or Copyright — What Comes Next?",
+        summary: "Congratulations! You've received your trademark or copyright. But what comes next? Let's look at the important steps you should take to maintain and maximize the value of your newly registered rights.",
+        imageSrc: "/hero.png",
+        category: "Trademark",
+        slug: "receiving-trademark-copyright-next"
+    },
+    {
         title: "Trademark Engine Launches New Brand Identity",
         summary: "Trademark Engine is happy to visually introduce our new look and feel to our customers, industry partners, and community...",
         imageSrc: "/hero.png",
