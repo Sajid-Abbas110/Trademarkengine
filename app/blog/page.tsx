@@ -103,7 +103,7 @@ export default function BlogPage() {
                                     <span className="flex items-center gap-1"><Tag className="w-4 h-4" /> Business</span>
                                 </div>
                                 <Link
-                                    href="/blog/featured"
+                                    href="/blog/top-10-reasons-sellers-trademark"
                                     className="inline-block bg-[#ea580c] text-white font-bold py-3 px-8 rounded-md shadow hover:bg-[#c2410c] transition-colors"
                                 >
                                     Read Full Article
