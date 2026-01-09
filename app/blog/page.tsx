@@ -17,6 +17,13 @@ const blogPosts = [
         slug: "top-10-reasons-sellers-trademark"
     },
     {
+        title: "Trademark Engine Launches Headless API to Power Trademark Registrations, Searches, and Monitoring for Partner Platforms",
+        summary: "Trademark Engine, a leader in trademark registration, trademark searches, and trademark monitoring technology, today announced the launch of its Headless API.",
+        imageSrc: "/hero.png",
+        category: "Technology",
+        slug: "trademark-engine-headless-api"
+    },
+    {
         title: "Trademark Engine Launches New Brand Identity",
         summary: "Trademark Engine is happy to visually introduce our new look and feel to our customers, industry partners, and community...",
         imageSrc: "/hero.png",
