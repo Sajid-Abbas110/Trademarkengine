@@ -52,6 +52,13 @@ const blogPosts = [
         slug: "3-cautionary-tales-copyright-infringement"
     },
     {
+        title: "Tips & Tricks for Using Your Logo on Instagram",
+        summary: "Your logo is your brand's visual signature. Let Trademark Engine walk you step by step through the best practices for using your logo on Instagram.",
+        imageSrc: "/hero.png",
+        category: "Marketing",
+        slug: "tips-tricks-logo-instagram"
+    },
+    {
         title: "Trademark Engine Launches New Brand Identity",
         summary: "Trademark Engine is happy to visually introduce our new look and feel to our customers, industry partners, and community...",
         imageSrc: "/hero.png",
