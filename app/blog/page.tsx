@@ -31,6 +31,13 @@ const blogPosts = [
         slug: "top-10-ways-ai-llms-trademark"
     },
     {
+        title: "The Top 5 Reasons to Copyright Your Work",
+        summary: "Copyright protection starts when you create something original, but the actual registration gives you the power to prove ownership and protect your work.",
+        imageSrc: "/hero.png",
+        category: "Copyright",
+        slug: "top-5-reasons-copyright-work"
+    },
+    {
         title: "Trademark Engine Launches New Brand Identity",
         summary: "Trademark Engine is happy to visually introduce our new look and feel to our customers, industry partners, and community...",
         imageSrc: "/hero.png",
