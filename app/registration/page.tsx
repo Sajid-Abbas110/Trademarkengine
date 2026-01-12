@@ -7,6 +7,7 @@ import ServicePricingCard from "@/app/components/ServicePricingCard";
 import FAQAccordion from "@/app/components/FAQAccordion";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import TestimonialCarousel from "../components/TestimonialCarousel";
 
 export default function RegistrationPage() {
     return (
@@ -39,7 +40,7 @@ export default function RegistrationPage() {
                                     </div>
                                 </div>
                                 <Link
-                                    href="#pricing"
+                                    href="/registration/new"
                                     className="inline-block bg-[#ea580c] text-white font-bold py-4 px-10 rounded-md shadow-lg hover:bg-[#c2410c] transition-colors"
                                 >
                                     Start My Application
@@ -220,35 +221,11 @@ export default function RegistrationPage() {
                 </section>
 
                 {/* Testimonial Highlight */}
-                <section className="py-20 bg-white">
-                    <div className="container mx-auto px-4 max-w-5xl">
-                        <div className="bg-[#fff7ed] rounded-3xl p-8 md:p-12 md:flex items-center gap-12 relative overflow-hidden">
-                            <div className="md:w-1/3 relative z-10">
-                                <div className="aspect-square rounded-2xl overflow-hidden shadow-lg border-4 border-white">
-                                    <Image src="/hero.png" alt="Happy Customer" width={400} height={400} className="object-cover h-full w-full" />
-                                </div>
-                            </div>
-                            <div className="md:w-2/3 relative z-10 mt-8 md:mt-0">
-                                <Star className="w-8 h-8 fill-[#ea580c] text-[#ea580c] mb-6" />
-                                <blockquote className="text-xl md:text-2xl font-bold text-slate-900 mb-6 leading-relaxed">
-                                    "Trademark Engine was the easiest way to protect our brand. The platform is simple, and the team was incredibly helpful whenever we had a question."
-                                </blockquote>
-                                <div>
-                                    <div className="font-bold text-slate-900">James T.</div>
-                                    <div className="text-slate-500 text-sm">Founder, TechStart Inc.</div>
-                                </div>
-                            </div>
-                            {/* Decorative Quote */}
-                            <div className="absolute top-4 right-8 text-9xl text-orange-100 font-serif leading-none z-0">
-                                ”
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                <TestimonialCarousel />
 
                 {/* FAQs */}
                 <section className="py-20 bg-slate-50">
-                    <div className="container mx-auto px-4 max-w-3xl">
+                    <div className="container mx-auto px-4 max-w-5xl">
                         <div className="text-center mb-12">
                             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Federal Trademark Registration FAQs</h2>
                             <p className="text-slate-500">Do you have questions? Most of our clients do! Here are some of the most common ones.</p>
@@ -282,6 +259,16 @@ export default function RegistrationPage() {
                         ]} />
                     </div>
                 </section>
+
+                <div className="container mx-auto px-4 max-w-5xl pb-20 text-gray-600 items-center">
+                    <span>
+                        *The law firm responsible for the portion of this page constituting an advertisement is Swyft Legal, LLC who can be reached at
+                        <span className="text-orange-500">support@swyftlegal.com</span>. Swyft Legal, LLC is licensed by the Arizona Supreme Court under license number 70173. <br />All legal services provided in connection with the attorney-led trademark process are provided by Swyft Legal, LLC. Trademark Engine is an affiliate of Swyft Legal, LLC.
+                        *After a 7-day free trial, your Brand Protection+ subscription will automatically renew at $199 quarterly.
+
+                        *The USPTO charges a government filing fee of $350 per class. If your application uses a custom description instead of entries from the USPTO's ID Manual, the fee increases to $550 per class. Swyft Legal also charges a $100 legal fee per class for attorney review and class-specific legal services. This legal fee is separate from—and in addition to—the cited package price and any government filing fees.
+                    </span>
+                </div>
 
                 {/* Final CTA */}
                 <section className="py-20 bg-[#1e293b] text-center">

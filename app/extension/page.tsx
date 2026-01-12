@@ -57,7 +57,7 @@ export default function ExtensionPage() {
                             Don't risk abandonment of your trademark application. Secure your extension now.
                         </p>
                         <a
-                            href="/extension/form"
+                            href="/registration/new"
                             className="inline-block bg-[#ea580c] hover:bg-[#c2410c] text-white font-bold py-4 px-10 rounded-md shadow-lg hover:shadow-xl transition-all"
                         >
                             Extension Filing Form

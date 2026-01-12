@@ -2,7 +2,7 @@ import { Search } from "lucide-react";
 
 export default function FreeSearchHero() {
     return (
-        <section className="bg-white py-20 text-center">
+        <section className="bg-white pb-20 pt-52 text-center">
             <div className="container mx-auto px-4">
                 <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
                     Search millions of <br />

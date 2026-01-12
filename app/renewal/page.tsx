@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import RenewalFAQ from "./RenewalFAQ";
 import { Star, Smartphone, Check, User, ArrowRight, Quote } from "lucide-react";
+import TestimonialCarousel from "../components/TestimonialCarousel";
 
 export default function TrademarkRenewalPage() {
     return (
@@ -232,36 +233,7 @@ export default function TrademarkRenewalPage() {
                 </section>
 
                 {/* Testimonial Section */}
-                <section className="py-24 bg-[#fffdfa]">
-                    <div className="container mx-auto px-4 max-w-5xl">
-                        <div className="flex flex-col md:flex-row bg-white rounded-2xl shadow-xl overflow-hidden min-h-[400px]">
-                            <div className="w-full md:w-5/12 relative min-h-[300px]">
-                                <Image
-                                    src="/renewal-testimonial.png"
-                                    alt="Customer"
-                                    fill
-                                    className="object-cover"
-                                />
-                            </div>
-                            <div className="w-full md:w-7/12 p-8 md:p-12 flex flex-col justify-center relative">
-                                <Quote className="text-orange-200 fill-orange-200 w-16 h-16 absolute top-8 left-8" />
-                                <div className="relative z-10">
-                                    <p className="text-xl md:text-2xl font-serif text-slate-800 mb-6 italic">
-                                        "Trademark Engine made renewing my mark incredibly helpful and simple. Which is everything! I highly recommend using them for any trademark needs!"
-                                    </p>
-                                    <div>
-                                        <div className="font-bold text-slate-900">- James</div>
-                                        <div className="text-slate-500 text-sm">Founder, Known</div>
-                                    </div>
-                                    <div className="flex gap-2 mt-8">
-                                        <div className="w-8 h-8 bg-[#1e293b] rounded flex items-center justify-center text-white"><ArrowRight className="w-4 h-4 rotate-180" /></div>
-                                        <div className="w-8 h-8 bg-[#1e293b] rounded flex items-center justify-center text-white"><ArrowRight className="w-4 h-4" /></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                <TestimonialCarousel />
 
                 {/* FAQ */}
                 <section className="py-24 bg-white relative">

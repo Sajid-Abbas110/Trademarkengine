@@ -29,7 +29,7 @@ export default function CopyrightPricing() {
                                 View sample details <Info className="w-3 h-3" />
                             </Link>
 
-                            <Link href="/registration" className="block w-full bg-[#1e293b] hover:bg-[#0f172a] text-white font-bold py-4 rounded-lg mt-8 transition-colors">
+                            <Link href="/registration/new" className="block w-full bg-[#1e293b] hover:bg-[#0f172a] text-white font-bold py-4 rounded-lg mt-8 transition-colors">
                                 Get Started
                             </Link>
                         </div>
@@ -74,7 +74,7 @@ export default function CopyrightPricing() {
                                 View sample details <Info className="w-3 h-3" />
                             </Link>
 
-                            <Link href="/registration" className="block w-full bg-[#1e293b] hover:bg-[#0f172a] text-white font-bold py-4 rounded-lg mt-8 transition-colors">
+                            <Link href="/registration/new" className="block w-full bg-[#1e293b] hover:bg-[#0f172a] text-white font-bold py-4 rounded-lg mt-8 transition-colors">
                                 Get Started
                             </Link>
                         </div>

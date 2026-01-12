@@ -3,10 +3,12 @@ import Link from "next/link";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import Image from "next/image";
+import ResourcesSection from "@/app/components/ResourcesSection";
 
 // Blog post data
 const blogPosts: { [key: string]: any } = {
   "trademark-engine-headless-api": {
+    id: 1,
     title: "Trademark Engine Launches Headless API to Power Trademark Registrations, Searches, and Monitoring for Partner Platforms",
     date: "October 20, 2026",
     category: "Technology",
@@ -63,6 +65,7 @@ const blogPosts: { [key: string]: any } = {
     `
   },
   "tips-tricks-logo-instagram": {
+    id: 2,
     title: "Tips & Tricks for Using Your Logo on Instagram",
     date: "August 20, 2025",
     category: "Marketing",
@@ -168,6 +171,7 @@ const blogPosts: { [key: string]: any } = {
     `
   },
   "3-cautionary-tales-copyright-infringement": {
+    id: 3,
     title: "3 Cautionary Tales of Copyright Infringement",
     date: "September 18, 2025",
     category: "Copyright",
@@ -237,6 +241,7 @@ const blogPosts: { [key: string]: any } = {
     `
   },
   "receiving-trademark-copyright-next": {
+    id: 4,
     title: "Receiving Your Trademark or Copyright — What Comes Next?",
     date: "September 15, 2025",
     category: "Trademark",
@@ -331,6 +336,7 @@ const blogPosts: { [key: string]: any } = {
     `
   },
   "top-5-reasons-copyright-work": {
+    id: 5,
     title: "The Top 5 Reasons to Copyright Your Work",
     date: "August 16, 2025",
     category: "Copyright",
@@ -388,6 +394,7 @@ const blogPosts: { [key: string]: any } = {
     `
   },
   "top-10-ways-ai-llms-trademark": {
+    id: 6,
     title: "Top 10 Ways to Use AI and LLMs to Make Trademark Registration Easier",
     date: "October 21, 2026",
     category: "Technology",
@@ -469,6 +476,7 @@ const blogPosts: { [key: string]: any } = {
     `
   },
   "top-10-reasons-sellers-trademark": {
+    id: 7,
     title: "Top 10 Reasons Every Online Seller on Amazon, eBay, Etsy, and Other Marketplaces Should Trademark and Copyright their Brand",
     date: "January 9, 2026",
     category: "Copyright",
@@ -635,26 +643,7 @@ export default async function BlogPost({ params }: { params: any }) {
       </article>
 
       {/* Related Posts */}
-      <section className="bg-gray-50 py-16">
-        <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">Related Articles</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer">
-                <div className="h-48 bg-gray-300"></div>
-                <div className="p-4">
-                  <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
-                    Related Article {i}
-                  </h3>
-                  <p className="text-gray-600 text-sm line-clamp-2">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <ResourcesSection />
 
       <Footer />
     </div>

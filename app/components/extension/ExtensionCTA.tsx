@@ -13,7 +13,7 @@ export default function ExtensionCTA() {
                     and keep your registration process on track.
                 </p>
                 <Link
-                    href="/extension/form"
+                    href="/registration/new"
                     className="inline-flex items-center gap-2 bg-[#ea580c] hover:bg-[#c2410c] text-white font-bold py-4 px-10 rounded-md shadow-lg hover:shadow-xl transition-all"
                 >
                     Start Your Extension

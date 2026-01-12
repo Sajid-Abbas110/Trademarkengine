@@ -7,6 +7,7 @@ import Timeline from "@/app/components/Timeline";
 import TestimonialCarousel from "@/app/components/TestimonialCarousel"; // Reusing if appropriate, or create simple testimonials
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import GlassdoorSection from "../components/GlassdoorSection";
 // Assuming we want a specific layout, I'll build the sections directly.
 
 export default function AboutPage() {
@@ -31,7 +32,7 @@ export default function AboutPage() {
                         </Link>
 
                         {/* Photo Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-6xl mx-auto items-center">
                             <div className=" md:col-span-1 h-64 md:h-80 relative rounded-2xl overflow-hidden shadow-xl">
                                 {/* Placeholder for first image - couple working */}
                                 <div className="absolute inset-0 bg-slate-200 flex items-center justify-center text-slate-400">
@@ -45,7 +46,7 @@ export default function AboutPage() {
                                     <div className="absolute inset-0 bg-gradient-to-br from-orange-100 to-orange-50 z-[-1]" />
                                 </div>
                             </div>
-                            <div className="md:col-span-2 grid grid-rows-2 gap-6 h-64 md:h-80">
+                            <div className="md:col-span-2 grid grid-rows-2 gap-6 h-64 md:h-[490px]">
                                 <div className="relative rounded-2xl overflow-hidden shadow-xl">
                                     <div className="absolute inset-0 bg-slate-200 flex items-center justify-center text-slate-400">
                                         <Image
@@ -118,7 +119,7 @@ export default function AboutPage() {
 
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-6xl mx-auto">
                             {/* Card 1 */}
-                            <div className="bg-white p-8 rounded-xl shadow-md border hover:shadow-xl transition-all group">
+                            <div className="bg-white p-8 rounded-xl shadow-md border border-orange-300 hover:shadow-xl transition-all group">
                                 <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6 text-[#ea580c] group-hover:scale-110 transition-transform">
                                     <Target className="w-8 h-8" />
                                 </div>
@@ -129,7 +130,7 @@ export default function AboutPage() {
                                 </Link>
                             </div>
                             {/* Card 2 */}
-                            <div className="bg-white p-8 rounded-xl shadow-md border hover:shadow-xl transition-all group">
+                            <div className="bg-white p-8 rounded-xl shadow-md border border-orange-300 hover:shadow-xl transition-all group">
                                 <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6 text-[#ea580c] group-hover:scale-110 transition-transform">
                                     <FileText className="w-8 h-8" />
                                 </div>
@@ -140,7 +141,7 @@ export default function AboutPage() {
                                 </Link>
                             </div>
                             {/* Card 3 */}
-                            <div className="bg-white p-8 rounded-xl shadow-md border hover:shadow-xl transition-all group">
+                            <div className="bg-white p-8 rounded-xl shadow-md border border-orange-300 hover:shadow-xl transition-all group">
                                 <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6 text-[#ea580c] group-hover:scale-110 transition-transform">
                                     <ShieldCheck className="w-8 h-8" />
                                 </div>
@@ -151,7 +152,7 @@ export default function AboutPage() {
                                 </Link>
                             </div>
                             {/* Card 4 */}
-                            <div className="bg-white p-8 rounded-xl shadow-md border hover:shadow-xl transition-all group">
+                            <div className="bg-white p-8 rounded-xl shadow-md border border-orange-300 hover:shadow-xl transition-all group">
                                 <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6 text-[#ea580c] group-hover:scale-110 transition-transform">
                                     <ShoppingBag className="w-8 h-8" />
                                 </div>
@@ -161,13 +162,16 @@ export default function AboutPage() {
                                     See benefits <ArrowRight className="w-4 h-4" />
                                 </Link>
                             </div>
+
+
                         </div>
+                        <GlassdoorSection />
                     </div>
                 </section>
 
                 {/* What We Can Do For You */}
-                <section className="py-20 bg-[#fff7ed]">
-                    <div className="container mx-auto px-4">
+                <section className="pb-20 -mt-52 bg-[#fff7ed]">
+                    <div className="container mx-auto px-4 pt-52">
                         <div className="flex flex-col md:flex-row items-center gap-16 max-w-6xl mx-auto">
                             <div className="w-full md:w-1/2">
                                 <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-12">
@@ -211,7 +215,7 @@ export default function AboutPage() {
                             </div>
                             <div className="w-full md:w-1/2 relative">
                                 {/* Abstract representation of dashboard */}
-                                <div className="bg-white p-6 rounded-2xl shadow-xl w-full border border-slate-100 flex flex-col gap-4">
+                                {/* <div className="bg-white p-6 rounded-2xl shadow-xl w-full border border-slate-100 flex flex-col gap-4">
                                     <div className="h-4 w-1/3 bg-slate-100 rounded"></div>
                                     <div className="h-8 w-2/3 bg-slate-200 rounded mb-4"></div>
                                     <div className="space-y-3">
@@ -226,7 +230,8 @@ export default function AboutPage() {
                                         ))}
                                     </div>
                                     <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-orange-100 rounded-full blur-3xl opacity-50 z-[-1]"></div>
-                                </div>
+                                </div> */}
+                                <Image src="/search.png" alt="Dashboard" width={500} height={500} />
                             </div>
                         </div>
                     </div>

@@ -14,7 +14,7 @@ export default function ExtensionHero() {
                     <div className="space-y-8">
                         <div className="space-y-4">
                             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
-                                File Your Statement of <br />
+                                File Your <br />Statement of <br />
                                 <span className="text-blue-400">Use Extension Online.</span>
                             </h1>
                             <p className="text-lg text-slate-300 max-w-xl leading-relaxed">
@@ -73,10 +73,12 @@ export default function ExtensionHero() {
                     <div className="relative lg:h-[600px] flex items-center justify-center">
                         {/* We will use a placeholder or the provided design style */}
                         <div className="relative w-full aspect-[4/3] lg:aspect-auto lg:h-full bg-slate-800/50 rounded-2xl overflow-hidden border border-slate-700 shadow-2xl">
-                            <div className="absolute inset-0 flex items-center justify-center text-slate-500">
-                                {/* Placeholder for the tablet image in the design */}
-                                <span className="text-lg">Tablet Dashboard Image</span>
-                            </div>
+                            <Image
+                                src="/extension-hero.jpg"
+                                alt="Extension Hero"
+                                fill
+                                className="object-cover"
+                            />
                             {/* If we had the image asset we would put <Image /> here */}
                         </div>
                     </div>

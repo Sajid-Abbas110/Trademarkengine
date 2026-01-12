@@ -18,6 +18,20 @@ export default function HeroSection() {
                         <p className="text-lg text-slate-600 max-w-lg leading-relaxed">
                             Protect your brand name, slogan, or logo today with our fast, easy, and affordable trademark registration services. Start your application in minutes!
                         </p>
+                        <ul className="space-y-3">
+                            <li className="flex items-center gap-3 text-slate-700">
+                                <div className="w-2 h-2 bg-[#ea580c] rounded-full"></div>
+                                250,000+ Trademark Customers Since 2016
+                            </li>
+                            <li className="flex items-center gap-3 text-slate-700">
+                                <div className="w-2 h-2 bg-[#ea580c] rounded-full"></div>
+                                35,000+ five-star reviews
+                            </li>
+                            <li className="flex items-center gap-3 text-slate-700">
+                                <div className="w-2 h-2 bg-[#ea580c] rounded-full"></div>
+                                Rated 4.8 by Forbes Advisor
+                            </li>
+                        </ul>
 
                         <div className="flex flex-col sm:flex-row gap-4 pt-2">
                             <Link

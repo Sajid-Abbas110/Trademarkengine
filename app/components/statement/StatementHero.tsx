@@ -48,10 +48,7 @@ export default function StatementHero() {
                     <div className="relative lg:h-[500px] flex items-center justify-center">
                         <div className="relative w-full aspect-[4/3] lg:aspect-auto lg:h-full rounded-2xl overflow-hidden shadow-2xl bg-slate-200">
                             {/* Placeholder for the person holding a tablet image */}
-                            <div className="absolute inset-0 flex items-center justify-center bg-slate-800 text-white">
-                                Person with Tablet Image
-                            </div>
-                            {/* <Image src="/statement-hero.jpg" fill className="object-cover" alt="Business person" /> */}
+                            <Image src="/statement-hero.jpg" fill className="object-cover" alt="Business person" />
                         </div>
                     </div>
                 </div>

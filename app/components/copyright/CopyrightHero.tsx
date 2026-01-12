@@ -14,7 +14,7 @@ export default function CopyrightHero() {
                         </div>
 
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight">
-                            You've worked hard to <br />
+                            You've worked <br />hard to <br />
                             create it. Now <br />
                             <span className="text-[#ea580c]">copyright it.</span>
                         </h1>
@@ -69,9 +69,7 @@ export default function CopyrightHero() {
                         {/* In a real app we would use the actual image of the artist painting */}
                         <div className="absolute inset-0 bg-slate-200">
                             {/* Placeholder generic connection to image tool or asset */}
-                            <div className="w-full h-full flex items-center justify-center bg-slate-800 text-white">
-                                Artist Painting Image Placeholder
-                            </div>
+                            <Image src="/copyright-hero.jpg" fill className="object-cover" alt="Artist painting" />
                         </div>
                         {/* If we had the asset: 
                          <Image src="/copyright-hero.jpg" fill className="object-cover" alt="Artist painting" /> 

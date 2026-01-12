@@ -10,6 +10,7 @@ import Footer from "../components/Footer";
 // Mock Data — show only posts that have pages/content
 const blogPosts = [
     {
+        id: 1,
         title: "Top 10 Reasons Every Online Seller on Amazon, eBay, Etsy, and Other Marketplaces Should Trademark and Copyright their Brand",
         summary: "Online sales are booming globally. E-commerce marketplaces and platforms like Amazon, eBay, Taobao, Tmall, Shopee, Rakuten, Walmart Marketplace...",
         imageSrc: "/hero.png",
@@ -17,34 +18,39 @@ const blogPosts = [
         slug: "top-10-reasons-sellers-trademark"
     },
     {
+        id: 2,
         title: "Trademark Engine Launches Headless API to Power Trademark Registrations, Searches, and Monitoring for Partner Platforms",
         summary: "Trademark Engine, a leader in trademark registration, trademark searches, and trademark monitoring technology, today announced the launch of its Headless API.",
-        imageSrc: "/hero.png",
+        imageSrc: "/blog-1.png",
         category: "Technology",
         slug: "trademark-engine-headless-api"
     },
     {
+        id: 3,
         title: "Top 10 Ways to Use AI and LLMs to Make Trademark Registration Easier",
         summary: "Artificial intelligence and large language models have changed how businesses work. They offer smarter, faster, and more accurate ways to handle trademark registration.",
-        imageSrc: "/hero.png",
+        imageSrc: "/blog-2.webp",
         category: "Technology",
         slug: "top-10-ways-ai-llms-trademark"
     },
     {
+        id: 4,
         title: "The Top 5 Reasons to Copyright Your Work",
         summary: "Copyright protection starts when you create something original, but the actual registration gives you the power to prove ownership and protect your work.",
-        imageSrc: "/hero.png",
+        imageSrc: "/search.png",
         category: "Copyright",
         slug: "top-5-reasons-copyright-work"
     },
     {
+        id: 5,
         title: "Receiving Your Trademark or Copyright — What Comes Next?",
         summary: "Congratulations! You've received your trademark or copyright. But what comes next? Let's look at the important steps you should take to maintain and maximize the value of your newly registered rights.",
-        imageSrc: "/hero.png",
+        imageSrc: "/blog-1.png",
         category: "Trademark",
         slug: "receiving-trademark-copyright-next"
     },
     {
+        id: 6,
         title: "3 Cautionary Tales of Copyright Infringement",
         summary: "What happens if you don't secure your copyright? Let's take a look at three cautionary tales of copyright infringement and the valuable lessons they offer.",
         imageSrc: "/hero.png",
@@ -52,16 +58,18 @@ const blogPosts = [
         slug: "3-cautionary-tales-copyright-infringement"
     },
     {
+        id: 7,
         title: "Tips & Tricks for Using Your Logo on Instagram",
         summary: "Your logo is your brand's visual signature. Let Trademark Engine walk you step by step through the best practices for using your logo on Instagram.",
-        imageSrc: "/hero.png",
+        imageSrc: "/blog-2.webp",
         category: "Marketing",
         slug: "tips-tricks-logo-instagram"
     },
     {
+        id: 8,
         title: "How Long Does Trademark Registration Take? — Timeline and Stages",
         summary: "One of the most common questions we get is how long does the process take. The answer depends on a few factors...",
-        imageSrc: "/hero.png",
+        imageSrc: "/search.png",
         category: "Trademark",
         slug: "how-long-trademark"
     },

@@ -78,8 +78,8 @@ export default function StatsSection() {
             </div>
 
             {/* Stats Strip (1000px width) */}
-            <div className="bg-[#1e293b] py-16">
-                <div className="mx-auto max-w-[1000px] px-6">
+            <div className="bg-[#1e293b] py-16 flex justify-center items-center max-w-[1200px] mx-auto">
+                <div className="mx-auto max-w-[1200px] px-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-slate-700 text-white">
                         <div className="px-4">
                             <div className="text-4xl md:text-5xl font-extrabold text-[#facc15] mb-2">
@@ -97,7 +97,6 @@ export default function StatsSection() {
                             <p className="text-slate-300 font-medium">
                                 Trademark registrations
                             </p>
-                            <p className="text-xs text-slate-500 mt-1">(and counting!)</p>
                         </div>
 
                         <div className="px-4 pt-8 md:pt-0">

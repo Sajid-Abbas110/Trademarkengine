@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 
 import React, { useState } from "react";
 import Link from "next/link";
@@ -60,12 +61,27 @@ export default function TrademarkWizard() {
         searchLevel: "Free",
         speed: "Standard",
     });
+    const router = useRouter();
+
+
+    const handleCheckout = async () => {
+        try {
+            setIsSubmitting(true);
+
+            // Example: redirect to checkout page
+            router.push("/checkout");
+
+            // OR call payment API here
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     const nextStep = () => {
-        if (currentStep === steps.length - 1) {
-            handleSubmit();
-        } else {
-            setCurrentStep(prev => Math.min(prev + 1, steps.length));
+        if (currentStep < steps.length) {
+            setCurrentStep(prev => prev + 1);
         }
     };
 
@@ -176,8 +192,8 @@ export default function TrademarkWizard() {
                             Let's complete your order!
                         </h1>
                         <div className="h-1.5 w-32 bg-[#ea580c]"></div>
-                        <p className="text-xl text-slate-600 font-medium whitespace-nowrap">
-                            Just one step away from your trademark registration.
+                        <p className="text-xl text-slate-600 font-medium whitespace-nowrap text-center">
+                            Just one step away from your trademark<br /> registration.
                         </p>
                     </div>
                 );
@@ -340,7 +356,7 @@ export default function TrademarkWizard() {
             case 4:
                 return (
                     <div className="space-y-8">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                             {[
                                 {
                                     id: "Basic",
@@ -564,7 +580,7 @@ export default function TrademarkWizard() {
                             </div>
                             <h3 className="text-3xl font-bold text-slate-800">Order Successful!</h3>
                             <p className="text-slate-600">Your trademark application has been received and is being processed.</p>
-                            <Link href="/user/trademarks" className="inline-block px-8 py-3 bg-[#ea580c] text-white rounded-md font-bold hover:bg-[#c2410c] transition-all">
+                            <Link href="/checkout" className="inline-block px-8 py-3 bg-[#ea580c] text-white rounded-md font-bold hover:bg-[#c2410c] transition-all">
                                 Go to My Trademarks
                             </Link>
                         </div>
@@ -637,13 +653,13 @@ export default function TrademarkWizard() {
 
             <div className="flex flex-1 flex-col lg:flex-row max-w-[1600px] mx-auto w-full">
                 {/* Left Panel */}
-                <div className="w-full lg:w-[45%] bg-[#F7F3EE] p-12 lg:p-24 flex flex-col justify-center animate-in slide-in-from-left duration-700">
+                <div className="w-full lg:w-[40%] bg-[#F7F3EE] lg:p-24 flex flex-col justify-center animate-in slide-in-from-left duration-700">
                     {renderLeftPanel()}
                 </div>
 
                 {/* Right Panel */}
-                <div className="w-full lg:w-[55%] p-8 lg:p-24 flex flex-col justify-center bg-white relative animate-in fade-in duration-500 delay-300">
-                    <div className={cn("w-full mx-auto space-y-12", (currentStep >= 4 && currentStep <= 6) ? "max-w-5xl" : "max-w-xl")}>
+                <div className="w-full lg:w-[60%]  lg:p-24 flex flex-col justify-center bg-white relative animate-in fade-in duration-500 delay-300">
+                    <div className={cn("w-full mx-auto space-y-12", (currentStep >= 4 && currentStep <= 6) ? "max-w-6xl" : "max-w-xl")}>
                         <div className="min-h-[400px]">
                             {renderStep()}
                         </div>
@@ -659,7 +675,14 @@ export default function TrademarkWizard() {
                                 Back
                             </button>
                             <button
-                                onClick={nextStep}
+                                onClick={() => {
+                                    if (currentStep === steps.length) {
+                                        handleCheckout(); // FINAL STEP → Checkout
+                                    } else {
+                                        nextStep(); // Normal step
+                                    }
+                                }}
+
                                 disabled={isSubmitting}
                                 className="flex-1 py-4 bg-[#ea580c] text-white rounded-md font-bold hover:bg-[#c2410c] transition-all shadow-lg hover:shadow-orange-200 flex items-center justify-center gap-2 group disabled:opacity-50"
                             >

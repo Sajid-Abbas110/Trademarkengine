@@ -47,9 +47,9 @@ export default function HowItWorks({
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 ">
                     {steps.map((step) => (
-                        <div key={step.id} className="flex flex-col items-center text-center group">
+                        <div key={step.id} className="flex flex-col items-center text-center group rounded-2xl border-2 border-orange-200 py-6">
                             <div className="w-16 h-16 bg-[#ea580c] rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-orange-200 group-hover:scale-110 transition-transform duration-300 relative">
                                 <step.icon className="w-8 h-8" />
                                 <div className="absolute -top-3 -right-3 w-8 h-8 bg-slate-900 rounded-full flex items-center justify-center text-white font-bold text-sm border-2 border-white">

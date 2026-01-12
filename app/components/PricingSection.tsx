@@ -110,7 +110,7 @@ export default function PricingSection({
                             <p className="text-xs text-slate-500 mb-8 uppercase font-semibold">{plan.description}</p>
 
                             <Link
-                                href="/registration"
+                                href="/registration/new"
                                 className={cn(
                                     "block w-full text-center py-4 rounded-lg font-bold transition-colors mb-8",
                                     plan.popular

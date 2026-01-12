@@ -67,7 +67,13 @@ export default function Timeline() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                                className="bg-white p-6 rounded-xl shadow-lg border border-slate-100 relative"
+                                className={cn(
+                                    "bg-white p-6 rounded-xl shadow-lg border border-slate-100 relative",
+                                    index % 2 === 0
+                                        ? "md:border-r-4 md:border-r-[#ea580c]"
+                                        : "md:border-l-4 md:border-l-[#ea580c]"
+                                )}
+
                             >
                                 {/* Mobile Line & Dot (Custom implementation for mobile) */}
                                 <div className="md:hidden absolute left-0 top-0 bottom-0 w-0.5 bg-orange-200 -ml-4" />

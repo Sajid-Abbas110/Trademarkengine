@@ -58,7 +58,7 @@ export default function UserLayout({
         <div className="min-h-screen bg-slate-50 flex">
             {/* Sidebar */}
             <aside className={cn(
-                "bg-slate-900 text-white fixed lg:relative z-30 h-screen transition-all duration-300 flex flex-col justify-between",
+                "bg-slate-900 text-white fixed top-0 left-0 z-30 h-screen overflow-y-auto transition-all duration-300 flex flex-col justify-between",
                 isSidebarOpen ? "w-64" : "w-20"
             )}>
                 <div>
@@ -141,7 +141,13 @@ export default function UserLayout({
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 overflow-auto w-full">
+            <main
+                className={cn(
+                    "flex-1 overflow-auto w-full transition-all duration-300",
+                    isSidebarOpen ? "ml-64" : "ml-20"
+                )}
+            >
+
                 {/* Header */}
                 <header className="h-20 bg-white border-b border-slate-200 sticky top-0 z-20 px-8 flex items-center justify-between">
                     <div className="flex items-center gap-4">

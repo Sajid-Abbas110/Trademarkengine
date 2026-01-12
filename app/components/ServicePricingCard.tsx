@@ -46,7 +46,7 @@ export default function ServicePricingCard({
             </div>
 
             <Link
-                href="/checkout"
+                href="/registration/new"
                 className={cn(
                     "w-full py-3 rounded-md font-bold text-sm mb-8 transition-colors text-center",
                     isPopular

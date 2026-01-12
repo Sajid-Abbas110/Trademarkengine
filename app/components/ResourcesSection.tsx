@@ -5,22 +5,22 @@ import { ArrowRight } from "lucide-react";
 export default function ResourcesSection() {
     const resources = [
         {
-            id: 1,
-            title: "Top 5 Mistakes When Filing a Trademark (And How To...)",
+            Title: "top-10-reasons-sellers-trademark",
+            title: "Top 10 Reasons Every Online Seller on Amazon, eBay, Etsy...",
             category: "Trademark Education",
-            image: "/hero.png",
+            image: "/blog-1.png",
             date: "Jan 15, 2025",
         },
         {
-            id: 2,
-            title: "Trademarks vs. Copyrights vs. Patents: What's the Diff...",
+            Title: "trademark-engine-headless-api",
+            title: "Trademark Engine Launches Headless API to Power...",
             category: "Legal Guides",
-            image: "/hero.png",
+            image: "/blog-2.webp",
             date: "Jan 12, 2025",
         },
         {
-            id: 3,
-            title: "Can I Trademark a Podcast Name or Logo?",
+            Title: "top-10-ways-ai-llms-trademark",
+            title: "Top 10 Ways to Use AI and LLMs to Make Trademark...",
             category: "Industry Specific",
             image: "/hero.png",
             date: "Jan 08, 2025",
@@ -52,8 +52,8 @@ export default function ResourcesSection() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {resources.map((resource) => (
                         <Link
-                            key={resource.id}
-                            href={`/blog/post-${resource.id}`}
+                            key={resource.Title}
+                            href={`/blog/${resource.Title}`}
                             className="group block"
                         >
                             {/* Image */}

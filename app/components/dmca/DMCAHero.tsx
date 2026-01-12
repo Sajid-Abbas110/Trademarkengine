@@ -68,9 +68,7 @@ export default function DMCAHero() {
                     <div className="relative lg:h-[600px] rounded-bl-[100px] overflow-hidden shadow-2xl">
                         <div className="absolute inset-0 bg-slate-200">
                             {/* Placeholder for the person with headphones image */}
-                            <div className="w-full h-full flex items-center justify-center bg-slate-800 text-white">
-                                Person with Headphones Image Placeholder
-                            </div>
+                            <Image src="/dmca-hero.jpg" fill className="object-cover" alt="Person with headphones" />
                         </div>
                         {/* 
                          <Image src="/dmca-hero.jpg" fill className="object-cover" alt="Person with headphones" /> 
