@@ -1,14 +1,24 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react"; // 1. Added Suspense import
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Settings, Lock, Mail, ArrowRight, Chrome, User, ShieldCheck, ArrowLeft } from "lucide-react";
+import { Settings, Lock, Mail, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type LoginRole = "selection" | "client" | "admin";
 
+// 2. Wrap the main component in Suspense
 export default function LoginPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+            <LoginForm />
+        </Suspense>
+    );
+}
+
+// 3. Move your logic into this sub-component
+function LoginForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -20,11 +30,7 @@ export default function LoginPage() {
     const [password, setPassword] = useState("");
 
     useEffect(() => {
-        if (isAdminLogin) {
-            setRole("admin");
-        } else {
-            setRole("client");
-        }
+        setRole(isAdminLogin ? "admin" : "client");
     }, [isAdminLogin]);
 
     const handleLogin = async (e: React.FormEvent) => {
