@@ -38,10 +38,19 @@ POSTGRES_PRISMA_URL="your-postgres-prisma-url-from-vercel"
 DATABASE_URL="file:./prisma/dev.db"
 ```
 
-### Step 4: Update Prisma Schema
+### Step 4: Update Prisma Configuration (Prisma 7)
 
-The schema needs to be updated to support PostgreSQL instead of SQLite.
-See the changes in `prisma/schema.prisma`.
+In Prisma 7, the connection URL is configured in `prisma.config.mjs` instead of `schema.prisma`.
+
+The configuration has been updated to:
+- Use `POSTGRES_PRISMA_URL` environment variable on Vercel
+- Fall back to SQLite (`file:./prisma/dev.db`) for local development if the env var is not set
+
+**Files updated:**
+- `prisma/schema.prisma` - Removed `url` property from datasource
+- `prisma.config.mjs` - Added environment variable support
+- `lib/db.ts` - Simplified to use standard PrismaClient
+
 
 ### Step 5: Update Database Connection
 
