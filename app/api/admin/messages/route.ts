@@ -32,6 +32,14 @@ export async function POST(req: Request) {
         return NextResponse.json({ success: true, message });
     } catch (error) {
         console.error("Failed to send message:", error);
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+        // Log more details for debugging
+        if (error instanceof Error) {
+            console.error("Error message:", error.message);
+            console.error("Error stack:", error.stack);
+        }
+        return NextResponse.json({
+            error: "Internal Server Error",
+            details: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : String(error)) : undefined
+        }, { status: 500 });
     }
 }
