@@ -12,7 +12,7 @@ export default function StatementCTA() {
                     Don't risk abandonment! If you leave, you're already past one of two filing hurdles by actually filing your trademark. Now that you are using your mark in commerce, finalize your registration with the Statement of Use so you can protect your brand in the USA.
                 </p>
                 <Link
-                    href="#"
+                    href="/statement-of-use/questionnaire"
                     className="inline-flex items-center gap-2 bg-[#ea580c] hover:bg-[#c2410c] text-white font-bold py-4 px-10 rounded-md shadow-lg hover:shadow-xl transition-all"
                 >
                     Get Started

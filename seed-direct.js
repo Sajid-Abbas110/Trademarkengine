@@ -10,7 +10,7 @@ function generateId() {
 const db = new Database('./prisma/dev.db');
 
 async function main() {
-    const hashedPassword = await bcrypt.hash('password123', 10);
+    const hashedPassword = await bcrypt.hash('Sajid@@123', 10);
     const now = new Date().toISOString();
 
     // Insert admin user
@@ -20,7 +20,7 @@ async function main() {
         VALUES (?, ?, ?, ?, ?, ?, ?)
     `);
 
-    insertAdmin.run(adminId, 'admin@example.com', hashedPassword, 'Admin User', 'admin', now, now);
+    insertAdmin.run(adminId, 'sajid.abbas.mme@gmail.com', hashedPassword, 'Admin User', 'admin', now, now);
 
     // Insert client user
     const clientId = generateId();
@@ -45,8 +45,8 @@ async function main() {
 
     console.log('✅ Database seeded successfully!');
     console.log('Admin credentials:');
-    console.log('  Email: admin@example.com');
-    console.log('  Password: password123');
+    console.log('  Email: sajid.abbas.mme@gmail.com');
+    console.log('  Password: Sajid@@123');
     console.log('');
     console.log('Client credentials:');
     console.log('  Email: client@example.com');

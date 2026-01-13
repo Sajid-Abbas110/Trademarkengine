@@ -55,7 +55,7 @@ export default function DMCAPage() {
                             Thousands have protected their brand by monitoring their trademark.
                         </p>
                         <a
-                            href="#"
+                            href="/dmca/questionnaire"
                             className="inline-block bg-[#ea580c] hover:bg-[#c2410c] text-white font-bold py-4 px-10 rounded-md shadow-lg hover:shadow-xl transition-all"
                         >
                             Start Your DMCA Takedown Today

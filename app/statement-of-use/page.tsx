@@ -59,7 +59,7 @@ export default function StatementOfUsePage() {
                             Take the final step to secure your federal registration.
                         </p>
                         <a
-                            href="#"
+                            href="/statement-of-use/questionnaire"
                             className="inline-block bg-[#ea580c] hover:bg-[#c2410c] text-white font-bold py-4 px-10 rounded-md shadow-lg hover:shadow-xl transition-all"
                         >
                             File My Statement of Use

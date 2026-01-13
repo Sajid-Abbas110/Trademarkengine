@@ -95,7 +95,7 @@ export default function RegisterPage() {
                     <form onSubmit={handleRegister} className="space-y-6">
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <label className="text-sm font-bold text-slate-700 ml-1">Full Name</label>
+                                <label className="text-sm font-bold text-slate-900 ml-1">Full Name</label>
                                 <div className="relative group">
                                     <User className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 group-focus-within:text-[#ea580c] transition-colors" />
                                     <input
@@ -110,7 +110,7 @@ export default function RegisterPage() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-sm font-bold text-slate-700 ml-1">Work Email</label>
+                                <label className="text-sm font-bold text-slate-900 ml-1">Work Email</label>
                                 <div className="relative group">
                                     <Mail className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 group-focus-within:text-[#ea580c] transition-colors" />
                                     <input
@@ -125,7 +125,7 @@ export default function RegisterPage() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-sm font-bold text-slate-700 ml-1">Password</label>
+                                <label className="text-sm font-bold text-slate-900 ml-1">Password</label>
                                 <div className="relative group">
                                     <Lock className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 group-focus-within:text-[#ea580c] transition-colors" />
                                     <input

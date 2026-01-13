@@ -6,13 +6,14 @@ const globalForPrisma = globalThis as unknown as {
     prisma: PrismaClient | undefined
 }
 
-const db = globalForPrisma.prisma ?? (() => {
+const prisma = globalForPrisma.prisma ?? (() => {
     const adapter = new PrismaBetterSqlite3({
         url: `file:${path.resolve(process.cwd(), 'prisma', 'dev.db')}`
     })
     return new PrismaClient({ adapter })
 })()
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 
-export default db
+export { prisma }
+export default prisma

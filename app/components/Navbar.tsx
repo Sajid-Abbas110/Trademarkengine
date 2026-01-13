@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, FileText, Search, ShieldAlert, RefreshCw, Copyright, AlertTriangle, Scale, User, Settings, BookOpen, CircleHelp } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Logo from "./Logo";
 
 export default function Navbar() {
     const pathname = usePathname();
@@ -52,28 +53,31 @@ export default function Navbar() {
     // Determine CTA Button Text and Link based on standard pathname
     const getCtaInfo = () => {
         if (pathname?.includes("/comprehensive-search")) {
-            return { text: "Start Comprehensive Search", href: "/comprehensive-search#pricing" };
+            return { text: "Start Comprehensive Search", href: "/comprehensive-search/questionnaire" };
         }
         if (pathname?.includes("/copyright")) {
-            return { text: "Start Copyright Registration", href: "/copyright#pricing" };
+            return { text: "Start Copyright Registration", href: "/copyright/questionnaire" };
         }
         if (pathname?.includes("/statement-of-use")) {
-            return { text: "File Statement of Use", href: "/statement-of-use#process" };
+            return { text: "File Statement of Use", href: "/statement-of-use/questionnaire" };
         }
         if (pathname?.includes("/dmca")) {
-            return { text: "Start DMCA Takedown", href: "/dmca#start" };
+            return { text: "Start DMCA Takedown", href: "/dmca/questionnaire" };
         }
         if (pathname?.includes("/extension")) {
             return { text: "File an Extension", href: "/extension#pricing" };
         }
         if (pathname?.includes("/renewal")) {
-            return { text: "File Trademark Renewal", href: "/renewal" };
-        }
-        if (pathname?.includes("/monitoring")) {
-            return { text: "Start Trademark Monitoring", href: "/monitoring" };
+            return { text: "File Trademark Renewal", href: "/renewal/questionnaire" };
         }
         if (pathname?.includes("/office-action")) {
-            return { text: "Respond to Office Action", href: "/office-action" };
+            return { text: "Start Office Action Response", href: "/office-action/questionnaire" };
+        }
+        if (pathname?.includes("/monitoring")) {
+            return { text: "Start Trademark Monitoring", href: "/monitoring/questionnaire" };
+        }
+        if (pathname?.includes("/office-action")) {
+            return { text: "Respond to Office Action", href: "/office-action/questionnaire" };
         }
 
         // Default
@@ -93,14 +97,8 @@ export default function Navbar() {
                 {/* Left Section: Logo & Nav */}
                 <div className="flex items-center gap-12">
                     {/* Logo */}
-                    <Link href="/" className="flex items-center gap-2 group">
-                        {/* Logo Icon approximation */}
-                        <div className="text-[#ea580c]">
-                            <Settings className="w-8 h-8 fill-current" />
-                        </div>
-                        <span className="text-xl font-bold text-slate-800 tracking-tight">
-                            trademark <span className="text-slate-600">engine</span>
-                        </span>
+                    <Link href="/" className="hover:opacity-80 transition-opacity">
+                        <Logo />
                     </Link>
 
                     {/* Desktop Nav Links */}

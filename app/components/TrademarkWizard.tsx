@@ -15,9 +15,12 @@ import {
     Image as ImageIcon,
     HelpCircle,
     CreditCard,
-    CreditCard as GooglePay
+    FileText,
+    CreditCard as GooglePay,
+    Lock
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Logo from "./Logo";
 
 type MarkType = "Name" | "Slogan" | "Logo";
 
@@ -61,17 +64,55 @@ export default function TrademarkWizard() {
         searchLevel: "Free",
         speed: "Standard",
     });
+    const [currentUser, setCurrentUser] = useState<any | null>(null);
+    const [serialNumber, setSerialNumber] = useState<string | null>(null);
+    const [errors, setErrors] = useState<string[]>([]);
     const router = useRouter();
 
+    React.useEffect(() => {
+        async function checkSession() {
+            try {
+                const res = await fetch("/api/auth/me");
+                const data = await res.json();
+                if (data.user) {
+                    setCurrentUser(data.user);
+                    // Pre-fill if logged in
+                    const nameParts = data.user.name ? data.user.name.split(' ') : ["", ""];
+                    setFormData(prev => ({
+                        ...prev,
+                        firstName: prev.firstName || nameParts[0] || "",
+                        lastName: prev.lastName || nameParts.slice(1).join(' ') || "",
+                        email: prev.email || data.user.email || ""
+                    }));
+                }
+            } catch (e) {
+                console.error("Session check failed", e);
+            }
+        }
+        checkSession();
+    }, []);
+
+
+    const isStepValid = () => {
+        const newErrors: string[] = [];
+        if (currentStep === 2) {
+            if (!formData.markName?.trim()) newErrors.push("markName");
+            if (formData.markType === "Logo" && !formData.markDescription?.trim()) newErrors.push("markDescription");
+        } else if (currentStep === 3) {
+            if (!formData.firstName?.trim()) newErrors.push("firstName");
+            if (!formData.lastName?.trim()) newErrors.push("lastName");
+            if (!formData.email?.trim() || !formData.email.includes("@")) newErrors.push("email");
+            if (!formData.phone?.trim()) newErrors.push("phone");
+        }
+        setErrors(newErrors);
+        return newErrors.length === 0;
+    };
 
     const handleCheckout = async () => {
+        if (!isStepValid()) return;
         try {
             setIsSubmitting(true);
-
-            // Example: redirect to checkout page
-            router.push("/checkout");
-
-            // OR call payment API here
+            await handleSubmit();
         } catch (error) {
             console.error(error);
         } finally {
@@ -80,24 +121,55 @@ export default function TrademarkWizard() {
     };
 
     const nextStep = () => {
+        if (!isStepValid()) return;
         if (currentStep < steps.length) {
             setCurrentStep(prev => prev + 1);
+            window.scrollTo({ top: 0, behavior: "smooth" });
         }
     };
+
+    const [isNewUser, setIsNewUser] = useState<boolean>(false);
+    const [credentials, setCredentials] = useState<{ email: string; password: string } | null>(null);
 
     const handleSubmit = async () => {
         setIsSubmitting(true);
         try {
-            const response = await fetch("/api/user/trademarks", {
+            const response = await fetch("/api/service-request", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    name: formData.markName,
-                    type: formData.markType,
-                    serialNumber: "Pending", // Mock serial for now
+                    type: "TRADEMARK",
+                    data: {
+                        markName: formData.markName,
+                        markType: formData.markType,
+                        markDescription: formData.markDescription,
+                        contactInfo: {
+                            firstName: formData.firstName,
+                            lastName: formData.lastName,
+                            email: formData.email,
+                            phone: formData.phone
+                        },
+                        selections: {
+                            package: formData.package,
+                            searchLevel: formData.searchLevel,
+                            speed: formData.speed
+                        },
+                        total: total
+                    }
                 }),
             });
+
+            const result = await response.json();
+
             if (response.ok) {
+                setIsSubmitting(false);
+                setIsNewUser(result.isNewUser);
+                if (result.credentials) {
+                    setCredentials(result.credentials);
+                }
+                if (result.serialNumber) {
+                    setSerialNumber(result.serialNumber);
+                }
                 setIsSuccess(true);
                 setCurrentStep(steps.length);
             }
@@ -189,11 +261,11 @@ export default function TrademarkWizard() {
                 return (
                     <div className="space-y-6">
                         <h1 className="text-5xl font-extrabold text-[#0f172a] leading-tight">
-                            Let's complete your order!
+                            Generate Your Invoice
                         </h1>
                         <div className="h-1.5 w-32 bg-[#ea580c]"></div>
                         <p className="text-xl text-slate-600 font-medium whitespace-nowrap text-center">
-                            Just one step away from your trademark<br /> registration.
+                            We'll generate an official invoice<br /> for your records.
                         </p>
                     </div>
                 );
@@ -232,7 +304,7 @@ export default function TrademarkWizard() {
                             {[
                                 { type: "Name", desc: "Protects the words used to identify your brand.", icon: Type, example: "adidas" },
                                 { type: "Slogan", desc: "Protects a phrase or tagline tied to your brand.", icon: MessageSquare, example: "IMPOSSIBLE IS NOTHING" },
-                                { type: "Logo", desc: "Protects your visual design or symbol.", icon: ImageIcon, example: "The three-stripe logo" },
+                                { type: "Logo", desc: "Protects your visual design or symbol.", icon: (props: any) => <Logo iconClassName={props.className} showText={false} />, example: "Logo" },
                             ].map((item) => (
                                 <button
                                     key={item.type}
@@ -276,10 +348,17 @@ export default function TrademarkWizard() {
                             <input
                                 type="text"
                                 value={formData.markName}
-                                onChange={(e) => updateFormData({ markName: e.target.value })}
+                                onChange={(e) => {
+                                    updateFormData({ markName: e.target.value });
+                                    if (errors.includes("markName")) setErrors(errors.filter(e => e !== "markName"));
+                                }}
                                 placeholder="e.g., Adidas"
-                                className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-[#ea580c] text-lg font-medium"
+                                className={cn(
+                                    "w-full p-4 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-[#ea580c] text-lg font-medium transition-all",
+                                    errors.includes("markName") ? "border-red-500 bg-red-50" : "border-slate-200"
+                                )}
                             />
+                            {errors.includes("markName") && <p className="text-xs text-red-500 font-bold">Trademark name is required.</p>}
                         </div>
                         {formData.markType === "Logo" && (
                             <div className="space-y-4">
@@ -288,10 +367,17 @@ export default function TrademarkWizard() {
                                 </label>
                                 <textarea
                                     value={formData.markDescription}
-                                    onChange={(e) => updateFormData({ markDescription: e.target.value })}
+                                    onChange={(e) => {
+                                        updateFormData({ markDescription: e.target.value });
+                                        if (errors.includes("markDescription")) setErrors(errors.filter(e => e !== "markDescription"));
+                                    }}
                                     placeholder="e.g., A triangle formed by three black lines"
-                                    className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-[#ea580c] min-h-[120px] text-lg"
+                                    className={cn(
+                                        "w-full p-4 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-[#ea580c] min-h-[120px] text-lg transition-all",
+                                        errors.includes("markDescription") ? "border-red-500 bg-red-50" : "border-slate-200"
+                                    )}
                                 />
+                                {errors.includes("markDescription") && <p className="text-xs text-red-500 font-bold">Visual description is required for Logo trademarks.</p>}
                                 <div className="flex items-center gap-2 text-xs text-[#ea580c] font-bold cursor-pointer">
                                     <HelpCircle className="w-4 h-4" />
                                     How should I describe my logo?
@@ -309,9 +395,15 @@ export default function TrademarkWizard() {
                                 <input
                                     type="text"
                                     value={formData.firstName}
-                                    onChange={(e) => updateFormData({ firstName: e.target.value })}
+                                    onChange={(e) => {
+                                        updateFormData({ firstName: e.target.value });
+                                        if (errors.includes("firstName")) setErrors(errors.filter(e => e !== "firstName"));
+                                    }}
                                     placeholder="e.g., Bob"
-                                    className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#ea580c] outline-none"
+                                    className={cn(
+                                        "w-full p-3 border rounded-xl focus:ring-2 focus:ring-[#ea580c] outline-none transition-all",
+                                        errors.includes("firstName") ? "border-red-500 bg-red-50" : "border-slate-200"
+                                    )}
                                 />
                             </div>
                             <div className="space-y-2">
@@ -319,9 +411,15 @@ export default function TrademarkWizard() {
                                 <input
                                     type="text"
                                     value={formData.lastName}
-                                    onChange={(e) => updateFormData({ lastName: e.target.value })}
+                                    onChange={(e) => {
+                                        updateFormData({ lastName: e.target.value });
+                                        if (errors.includes("lastName")) setErrors(errors.filter(e => e !== "lastName"));
+                                    }}
                                     placeholder="e.g., Smith"
-                                    className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#ea580c] outline-none"
+                                    className={cn(
+                                        "w-full p-3 border rounded-xl focus:ring-2 focus:ring-[#ea580c] outline-none transition-all",
+                                        errors.includes("lastName") ? "border-red-500 bg-red-50" : "border-slate-200"
+                                    )}
                                 />
                             </div>
                         </div>
@@ -330,21 +428,37 @@ export default function TrademarkWizard() {
                             <input
                                 type="email"
                                 value={formData.email}
-                                onChange={(e) => updateFormData({ email: e.target.value })}
+                                onChange={(e) => {
+                                    updateFormData({ email: e.target.value });
+                                    if (errors.includes("email")) setErrors(errors.filter(e => e !== "email"));
+                                }}
                                 placeholder="e.g., bobsmith@example.com"
-                                className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#ea580c] outline-none"
+                                className={cn(
+                                    "w-full p-3 border rounded-xl focus:ring-2 focus:ring-[#ea580c] outline-none transition-all",
+                                    errors.includes("email") ? "border-red-500 bg-red-50" : "border-slate-200"
+                                )}
                             />
+                            {errors.includes("email") && <p className="text-[10px] text-red-500 font-bold">Please enter a valid email address.</p>}
                         </div>
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700">Phone Number</label>
                             <input
                                 type="tel"
                                 value={formData.phone}
-                                onChange={(e) => updateFormData({ phone: e.target.value })}
+                                onChange={(e) => {
+                                    updateFormData({ phone: e.target.value });
+                                    if (errors.includes("phone")) setErrors(errors.filter(e => e !== "phone"));
+                                }}
                                 placeholder="(888) 888-8888"
-                                className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#ea580c] outline-none"
+                                className={cn(
+                                    "w-full p-3 border rounded-xl focus:ring-2 focus:ring-[#ea580c] outline-none transition-all",
+                                    errors.includes("phone") ? "border-red-500 bg-red-50" : "border-slate-200"
+                                )}
                             />
                         </div>
+                        {errors.length > 0 && currentStep === 3 && (
+                            <p className="text-xs text-red-500 font-bold animate-pulse text-center">Please fill in all required contact information.</p>
+                        )}
                         <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl">
                             <input type="checkbox" id="sms" className="mt-1 accent-[#ea580c]" />
                             <label htmlFor="sms" className="text-xs text-slate-500 leading-relaxed font-medium">
@@ -578,51 +692,74 @@ export default function TrademarkWizard() {
                             <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
                                 <Check className="w-10 h-10" />
                             </div>
-                            <h3 className="text-3xl font-bold text-slate-800">Order Successful!</h3>
-                            <p className="text-slate-600">Your trademark application has been received and is being processed.</p>
-                            <Link href="/checkout" className="inline-block px-8 py-3 bg-[#ea580c] text-white rounded-md font-bold hover:bg-[#c2410c] transition-all">
-                                Go to My Trademarks
-                            </Link>
+                            <h3 className="text-3xl font-bold text-slate-800">Invoice Generated!</h3>
+                            <div className="bg-orange-50 border border-orange-100 rounded-lg p-3 inline-flex flex-col items-center mx-auto">
+                                <span className="text-[10px] font-bold text-orange-600 uppercase tracking-widest leading-none mb-1">Billed To:</span>
+                                <span className="text-sm font-black text-slate-800 leading-none">{formData.email}</span>
+                                <div className="mt-2 pt-2 border-t border-orange-100 w-full flex items-center justify-center gap-2">
+                                    <span className="text-[10px] font-bold text-orange-600 uppercase tracking-widest leading-none">Serial Number:</span>
+                                    <span className="text-sm font-black text-slate-800 leading-none">{serialNumber || "PENDING"}</span>
+                                </div>
+                            </div>
+                            <p className="text-slate-600 mt-4">
+                                {isNewUser
+                                    ? "Your application has been received! Use the credentials below to log into your tracking dashboard."
+                                    : "Your application has been received! We've added this request to your account. You can track its progress and view the invoice directly from your dashboard."
+                                }
+                            </p>
+
+                            {credentials && (
+                                <div className="mt-8 p-6 bg-slate-50 rounded-2xl border-2 border-[#ea580c]/10 text-left max-w-md mx-auto animate-in zoom-in duration-500">
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <Lock className="w-5 h-5 text-[#ea580c]" />
+                                        <h4 className="font-bold text-slate-800">Tracking Credentials</h4>
+                                    </div>
+                                    <p className="text-sm text-slate-500 mb-4">You can use these credentials to track your filing status in our portal:</p>
+                                    <div className="space-y-3">
+                                        <div className="flex justify-between items-center p-3 bg-white rounded-lg border border-slate-100 shadow-sm transition-all hover:border-[#ea580c]/30">
+                                            <span className="text-xs font-bold text-slate-400 uppercase">Email</span>
+                                            <span className="text-sm font-bold text-slate-800">{credentials.email}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center p-3 bg-white rounded-lg border border-slate-100 shadow-sm transition-all hover:border-[#ea580c]/30">
+                                            <span className="text-xs font-bold text-slate-400 uppercase">Temp Password</span>
+                                            <span className="text-sm font-bold text-blue-600 select-all font-mono">{credentials.password}</span>
+                                        </div>
+                                    </div>
+                                    <p className="mt-4 text-[10px] text-slate-400 italic text-center">Please save these credentials to track your application.</p>
+                                </div>
+                            )}
+
+                            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
+                                <button
+                                    onClick={() => alert("Downloading Invoice... This is a simulated download.")}
+                                    className="w-full sm:w-auto px-8 py-3 bg-[#1e293b] text-white rounded-md font-bold hover:bg-[#0f172a] transition-all flex items-center justify-center gap-2"
+                                >
+                                    <FileText className="w-5 h-5 text-[#ea580c]" />
+                                    Download Invoice
+                                </button>
+
+                                <Link
+                                    href="/user"
+                                    className="w-full sm:w-auto px-8 py-3 bg-[#ea580c] text-white rounded-md font-bold hover:bg-[#c2410c] transition-all"
+                                >
+                                    Go to Dashboard
+                                </Link>
+                            </div>
                         </div>
-                    )
+                    );
                 }
                 return (
-                    <div className="space-y-8">
-                        <div className="flex items-center gap-4 border-b border-slate-100 pb-4">
-                            <button className="text-sm font-bold text-[#ea580c] border-b-2 border-[#ea580c] pb-2">Credit Card/Debit Card</button>
-                            <button className="text-sm font-bold text-slate-400 pb-2 flex items-center gap-2">
-                                <GooglePay className="w-5 h-5 flex-shrink-0" />
-                                Buy with G Pay
-                            </button>
+                    <div className="p-8 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 text-center space-y-4">
+                        <div className="w-16 h-16 bg-orange-100 text-[#ea580c] rounded-full flex items-center justify-center mx-auto mb-4">
+                            <FileText className="w-8 h-8" />
                         </div>
-
-                        <div className="space-y-6">
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Card Number</label>
-                                <div className="relative">
-                                    <input type="text" placeholder="Card Number" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#ea580c] outline-none" />
-                                    <CreditCard className="w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Expiration Date (MM/YY)</label>
-                                    <input type="text" placeholder="MM/YY" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#ea580c] outline-none" />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">CVV (3 digits)</label>
-                                    <input type="text" placeholder="CVV" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#ea580c] outline-none" />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Postal Code</label>
-                                <input type="text" placeholder="Zip Code" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#ea580c] outline-none" />
-                            </div>
-
-                            <div className="pt-6 flex items-center justify-between border-t border-slate-100">
-                                <span className="text-2xl font-bold text-slate-800">My total</span>
-                                <span className="text-3xl font-bold text-[#ea580c]">${total}</span>
-                            </div>
+                        <h4 className="text-xl font-bold text-slate-800">Invoice Generation</h4>
+                        <p className="text-sm text-slate-600 max-w-xs mx-auto">
+                            Instead of immediate payment, we will generate an official invoice and send it to your email and our admin for processing.
+                        </p>
+                        <div className="pt-4 flex items-center justify-between border-t border-slate-200">
+                            <span className="text-xl font-bold text-slate-800">Total Amount</span>
+                            <span className="text-3xl font-bold text-[#ea580c]">${total}</span>
                         </div>
                     </div>
                 );
@@ -635,61 +772,74 @@ export default function TrademarkWizard() {
         <div className="min-h-screen bg-white flex flex-col pt-16">
             {/* Header bar */}
             <div className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-slate-100 flex items-center justify-between px-8 z-[60]">
-                <div className="flex items-center gap-2">
-                    <Shield className="w-8 h-8 text-[#ea580c]" />
-                    <span className="text-xl font-bold tracking-tight text-slate-800">trademark engine</span>
+                <Link href="/" className="hover:opacity-80 transition-opacity">
+                    <Logo />
+                </Link>
+                <div className="hidden md:flex flex-col text-right" >
+                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest" > Questions?</span>
+                    <a href="tel:03142281115" className="text-sm font-bold text-slate-600 hover:text-[#ea580c] transition-colors" > 03142281115 </a>
                 </div>
-                <div className="flex items-center gap-6">
-                    <div className="hidden md:flex flex-col text-right">
-                        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Questions?</span>
-                        <span className="text-sm font-bold text-slate-600">(877) 721-4579</span>
-                    </div>
-                    <button className="flex items-center gap-2 px-4 py-2 border-2 border-slate-100 rounded-full text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all">
-                        <MessageSquare className="w-4 h-4 text-[#ea580c]" />
-                        Chat with Us
-                    </button>
-                </div>
+                <a
+                    href="https://wa.me/923142281115"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2 border-2 border-slate-100 rounded-full text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all"
+                >
+                    <MessageSquare className="w-4 h-4 text-[#ea580c]" />
+                    Chat with Us
+                </a>
             </div>
 
-            <div className="flex flex-1 flex-col lg:flex-row max-w-[1600px] mx-auto w-full">
+            <div className="flex flex-1 flex-col lg:flex-row max-w-[1600px] mx-auto w-full" >
                 {/* Left Panel */}
-                <div className="w-full lg:w-[40%] bg-[#F7F3EE] lg:p-24 flex flex-col justify-center animate-in slide-in-from-left duration-700">
+                <div className="w-full lg:w-[40%] bg-[#F7F3EE] lg:p-24 flex flex-col justify-center animate-in slide-in-from-left duration-700" >
                     {renderLeftPanel()}
                 </div>
 
                 {/* Right Panel */}
-                <div className="w-full lg:w-[60%]  lg:p-24 flex flex-col justify-center bg-white relative animate-in fade-in duration-500 delay-300">
+                <div className="w-full lg:w-[60%]  lg:p-24 flex flex-col justify-center bg-white relative animate-in fade-in duration-500 delay-300" >
                     <div className={cn("w-full mx-auto space-y-12", (currentStep >= 4 && currentStep <= 6) ? "max-w-6xl" : "max-w-xl")}>
                         <div className="min-h-[400px]">
                             {renderStep()}
                         </div>
 
                         {/* Navigation Buttons */}
-                        <div className="flex items-center gap-4 pt-12 border-t border-slate-100">
-                            <button
-                                onClick={prevStep}
-                                disabled={currentStep === 1}
-                                className="px-8 py-3 rounded-md border-2 border-slate-100 text-slate-500 font-bold hover:bg-slate-50 disabled:opacity-0 transition-all flex items-center gap-2"
-                            >
-                                <ChevronLeft className="w-4 h-4" />
-                                Back
-                            </button>
-                            <button
-                                onClick={() => {
-                                    if (currentStep === steps.length) {
-                                        handleCheckout(); // FINAL STEP → Checkout
-                                    } else {
-                                        nextStep(); // Normal step
-                                    }
-                                }}
+                        {!isSuccess && (
+                            <div className="flex items-center gap-4 pt-12 border-t border-slate-100">
+                                <button
+                                    onClick={prevStep}
+                                    disabled={currentStep === 1 || isSubmitting}
+                                    className="px-8 py-3 rounded-md border-2 border-slate-100 text-slate-500 font-bold hover:bg-slate-50 disabled:opacity-0 transition-all flex items-center gap-2"
+                                >
+                                    <ChevronLeft className="w-4 h-4" />
+                                    Back
+                                </button>
 
-                                disabled={isSubmitting}
-                                className="flex-1 py-4 bg-[#ea580c] text-white rounded-md font-bold hover:bg-[#c2410c] transition-all shadow-lg hover:shadow-orange-200 flex items-center justify-center gap-2 group disabled:opacity-50"
-                            >
-                                {isSubmitting ? "Processing..." : currentStep === steps.length ? "Complete Order" : "Continue"}
-                                {!isSubmitting && <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
-                            </button>
-                        </div>
+                                {!(currentStep === steps.length && isSubmitting) && (
+                                    <button
+                                        onClick={() => {
+                                            if (currentStep === steps.length) {
+                                                handleCheckout(); // FINAL STEP → Checkout
+                                            } else {
+                                                nextStep(); // Normal step
+                                            }
+                                        }}
+                                        disabled={isSubmitting}
+                                        className="flex-1 py-4 bg-[#ea580c] text-white rounded-md font-bold hover:bg-[#c2410c] transition-all shadow-lg hover:shadow-orange-200 flex items-center justify-center gap-2 group disabled:opacity-50"
+                                    >
+                                        {isSubmitting ? "Processing..." : currentStep === steps.length ? "Generate Invoice & Submit" : "Continue"}
+                                        {!isSubmitting && <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
+                                    </button>
+                                )}
+
+                                {isSubmitting && currentStep === steps.length && (
+                                    <div className="flex-1 flex items-center justify-center py-4 text-[#ea580c] font-bold gap-2 bg-orange-50 rounded-xl border border-orange-100 animate-pulse">
+                                        <Clock className="w-5 h-5 animate-spin" />
+                                        Submitting Application...
+                                    </div>
+                                )}
+                            </div>
+                        )}
 
                         {/* Step Progress indicators */}
                         <div className="flex justify-between pt-12">

@@ -53,7 +53,7 @@ export default function TrademarkMonitoringPage() {
                                     </ul>
 
                                     <Link
-                                        href="/registration"
+                                        href="/monitoring/questionnaire"
                                         className="block w-fit bg-[#ea580c] text-white font-bold py-3 px-6 rounded shadow-lg hover:bg-[#c2410c] transition-colors mb-8 text-sm"
                                     >
                                         Start Your Trademark Monitoring Today
@@ -131,7 +131,7 @@ export default function TrademarkMonitoringPage() {
                             Thousands have protected their brand by monitoring their trademark.
                         </p>
                         <Link
-                            href="/registration"
+                            href="/monitoring/questionnaire"
                             className="inline-block bg-[#ea580c] text-white font-bold py-4 px-10 rounded shadow-lg hover:bg-[#c2410c] transition-colors"
                         >
                             Start Monitoring My Trademark Today

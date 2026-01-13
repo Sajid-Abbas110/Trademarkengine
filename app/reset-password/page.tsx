@@ -25,7 +25,7 @@ export default function ResetPasswordPage() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border px-4 py-2 rounded-md"
+            className="w-full border border-slate-200 px-4 py-2 rounded-md outline-none focus:ring-2 focus:ring-[#ea580c] focus:bg-white transition-all text-slate-900 placeholder:text-slate-400"
           />
 
           <button

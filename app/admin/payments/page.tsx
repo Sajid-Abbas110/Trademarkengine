@@ -16,22 +16,85 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const transactions = [
-    { id: "TXN-8842", customer: "Sarah Smith", amount: "$499.00", status: "Successful", method: "Visa •••• 4242", date: "Jan 07, 2024", type: "Payment" },
-    { id: "TXN-8841", customer: "John Doe", amount: "$99.00", status: "Successful", method: "Mastercard •••• 5555", date: "Jan 06, 2024", type: "Renewal" },
-    { id: "TXN-8840", customer: "Apex Corp", amount: "$1,200.00", status: "Pending", method: "Bank Transfer", date: "Jan 06, 2024", type: "Bulk Filing" },
-    { id: "TXN-8839", customer: "Mike Johnson", amount: "$499.00", status: "Successful", method: "Visa •••• 1111", date: "Jan 05, 2024", type: "Payment" },
-    { id: "TXN-8838", customer: "Elena Rodriguez", amount: "$250.00", status: "Refunded", method: "Visa •••• 4242", date: "Jan 04, 2024", type: "Refund" },
-];
-
 export default function PaymentTracking() {
+    const [transactions, setTransactions] = useState<any[]>([]);
+    const [statsData, setStatsData] = useState<any>(null);
+    const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
+
+    React.useEffect(() => {
+        async function fetchPayments() {
+            try {
+                const res = await fetch("/api/admin/requests");
+                const data = await res.json();
+                if (data.requests) {
+                    const mappedTxns = data.requests.map((req: any) => {
+                        let total = 0;
+                        try {
+                            const parsedData = JSON.parse(req.data);
+                            total = Number(parsedData.total) || 0;
+                        } catch (e) { }
+
+                        return {
+                            id: `TXN-${req.id.split('-').pop()?.toUpperCase() || req.id.substring(0, 4)}`,
+                            customer: req.user?.name || req.user?.email || "Guest",
+                            amount: `$${total.toLocaleString()}`,
+                            status: req.status === "COMPLETED" ? "Successful" : (req.status === "REJECTED" ? "Refunded" : "Pending"),
+                            method: "Invoice Payment",
+                            date: new Date(req.createdAt).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+                            type: req.type
+                        };
+                    });
+                    setTransactions(mappedTxns);
+                }
+                if (data.stats) {
+                    setStatsData(data.stats);
+                }
+            } catch (error) {
+                console.error("Failed to fetch payments", error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        fetchPayments();
+    }, []);
 
     const filteredTransactions = transactions.filter(txn =>
         txn.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
         txn.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
         txn.type.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    const handleExportLedger = () => {
+        if (transactions.length === 0) {
+            alert("No transactions to export");
+            return;
+        }
+
+        const headers = ["ID", "Customer", "Amount", "Status", "Method", "Date", "Type"];
+        const csvContent = [
+            headers.join(","),
+            ...transactions.map(t => [
+                t.id,
+                `"${t.customer}"`,
+                t.amount.replace("$", ""),
+                t.status,
+                t.method,
+                t.date,
+                t.type
+            ].join(","))
+        ].join("\n");
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", `TradeMarkEngine_Ledger_${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
     return (
         <div className="space-y-6 animate-in fade-in duration-500 pb-12">
@@ -41,7 +104,10 @@ export default function PaymentTracking() {
                     <h2 className="text-2xl font-bold text-slate-800">Payment Tracking</h2>
                     <p className="text-slate-500 text-sm">Review transactions and revenue metrics</p>
                 </div>
-                <button className="bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-all flex items-center gap-2">
+                <button
+                    onClick={handleExportLedger}
+                    className="bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-all flex items-center gap-2"
+                >
                     <Download className="w-4 h-4" />
                     Export Ledger
                 </button>
@@ -53,16 +119,16 @@ export default function PaymentTracking() {
                     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform text-[#ea580c]">
                         <DollarSign className="w-16 h-16 fill-current" />
                     </div>
-                    <p className="text-sm font-medium text-slate-500">Monthly Revenue</p>
+                    <p className="text-sm font-medium text-slate-500">Gross Volume</p>
                     <div className="flex items-end gap-3 mt-1">
-                        <h3 className="text-3xl font-bold text-slate-800">$12,450.00</h3>
+                        <h3 className="text-3xl font-bold text-slate-800">${statsData?.totalVolume?.toLocaleString() || "0"}</h3>
                         <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full flex items-center mb-1">
                             <ArrowUpRight className="w-3 h-3 mr-0.5" />
-                            12%
+                            Live
                         </span>
                     </div>
                     <div className="mt-4 flex items-center gap-2 text-slate-400">
-                        <p className="text-[10px] font-medium">+14 new payments today</p>
+                        <p className="text-[10px] font-medium">Total accumulated across all services</p>
                     </div>
                 </div>
 
@@ -70,16 +136,16 @@ export default function PaymentTracking() {
                     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform text-blue-600">
                         <Wallet className="w-16 h-16 fill-current" />
                     </div>
-                    <p className="text-sm font-medium text-slate-500">Pending Settlements</p>
+                    <p className="text-sm font-medium text-slate-500">Pending Invoices</p>
                     <div className="flex items-end gap-3 mt-1">
-                        <h3 className="text-3xl font-bold text-slate-800">$3,200.00</h3>
+                        <h3 className="text-3xl font-bold text-slate-800">{statsData?.pendingRequests || "0"}</h3>
                         <span className="text-xs font-bold text-slate-500 bg-slate-50 px-2 py-0.5 rounded-full flex items-center mb-1">
-                            5 items
+                            Requests
                         </span>
                     </div>
                     <div className="mt-4">
                         <div className="w-full bg-slate-100 rounded-full h-1.5">
-                            <div className="bg-blue-500 h-1.5 rounded-full w-2/3"></div>
+                            <div className="bg-blue-500 h-1.5 rounded-full w-full"></div>
                         </div>
                     </div>
                 </div>
@@ -88,15 +154,15 @@ export default function PaymentTracking() {
                     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
                         <Activity className="w-16 h-16" />
                     </div>
-                    <p className="text-sm font-medium text-slate-500">Refund Rate</p>
+                    <p className="text-sm font-medium text-slate-500">Total Transactions</p>
                     <div className="flex items-end gap-3 mt-1">
-                        <h3 className="text-3xl font-bold text-slate-800">0.8%</h3>
-                        <span className="text-xs font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-full flex items-center mb-1">
-                            <ArrowDownRight className="w-3 h-3 mr-0.5" />
-                            0.2%
+                        <h3 className="text-3xl font-bold text-slate-800">{statsData?.totalRequests || "0"}</h3>
+                        <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full flex items-center mb-1">
+                            <ArrowUpRight className="w-3 h-3 mr-0.5" />
+                            Active
                         </span>
                     </div>
-                    <p className="mt-4 text-[10px] text-slate-400 font-medium italic">Performance: Optimal</p>
+                    <p className="mt-4 text-[10px] text-slate-400 font-medium italic">Updates in real-time</p>
                 </div>
             </div>
 
@@ -137,7 +203,11 @@ export default function PaymentTracking() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
-                            {filteredTransactions.length > 0 ? (
+                            {isLoading ? (
+                                <tr>
+                                    <td colSpan={7} className="text-center py-24 text-slate-400 text-sm italic">Loading transactions...</td>
+                                </tr>
+                            ) : filteredTransactions.length > 0 ? (
                                 filteredTransactions.map((txn) => (
                                     <tr key={txn.id} className="hover:bg-slate-50 transition-colors group">
                                         <td className="px-6 py-4 text-xs font-bold text-[#ea580c]">{txn.id}</td>

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import {
     Users,
     Package,
@@ -9,117 +10,153 @@ import {
     ArrowUpRight,
     ArrowDownRight,
     Clock,
-    CheckCircle2,
-    AlertCircle
+    AlertCircle,
+    CheckCircle2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const stats = [
-    {
-        name: "Total Users",
-        value: "1,284",
-        change: "+12.5%",
-        trend: "up",
-        icon: Users,
-        color: "text-blue-600",
-        bg: "bg-blue-50"
-    },
-    {
-        name: "Active Users",
-        value: "842",
-        change: "+5.2%",
-        trend: "up",
-        icon: Users,
-        color: "text-green-600",
-        bg: "bg-green-50"
-    },
-    {
-        name: "Total Orders",
-        value: "452",
-        change: "+18.4%",
-        trend: "up",
-        icon: Package,
-        color: "text-orange-600",
-        bg: "bg-orange-50"
-    },
-    {
-        name: "Revenue",
-        value: "$42,500",
-        change: "-2.4%",
-        trend: "down",
-        icon: CreditCard,
-        color: "text-purple-600",
-        bg: "bg-purple-50"
-    },
-];
-
-const recentActivities = [
-    { id: 1, user: "John Doe", action: "Registered a new trademark", time: "2 hours ago", status: "pending", statusColor: "text-orange-600 bg-orange-50" },
-    { id: 2, user: "Sarah Smith", action: "Completed payment for #TRD-4521", time: "4 hours ago", status: "completed", statusColor: "text-green-600 bg-green-50" },
-    { id: 3, user: "Mike Johnson", action: "Updated profile information", time: "Yesterday", status: "updated", statusColor: "text-blue-600 bg-blue-50" },
-    { id: 4, user: "Apex Corp", action: "Filed for monitoring service", time: "Yesterday", status: "filed", statusColor: "text-purple-600 bg-purple-50" },
-    { id: 5, user: "Elena Rodriguez", action: "Requested trademark search", time: "2 days ago", status: "pending", statusColor: "text-orange-600 bg-orange-50" },
-];
-
 export default function AdminDashboard() {
+    const [requests, setRequests] = React.useState<any[]>([]);
+    const [statsData, setStatsData] = React.useState<any>(null);
+    const [isLoading, setIsLoading] = React.useState(true);
+
+    React.useEffect(() => {
+        async function fetchRequests() {
+            try {
+                const res = await fetch("/api/admin/requests");
+                const data = await res.json();
+                if (data.requests) {
+                    setRequests(data.requests);
+                }
+                if (data.stats) {
+                    setStatsData(data.stats);
+                }
+            } catch (error) {
+                console.error("Failed to fetch admin requests", error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        fetchRequests();
+    }, []);
+
+    const dashboardStats = [
+        {
+            name: "Total Requests",
+            value: statsData?.totalRequests?.toString() || "0",
+            change: "+12.5%",
+            trend: "up",
+            icon: Package,
+            color: "text-blue-600",
+            bg: "bg-blue-50",
+            href: "/admin/orders"
+        },
+        {
+            name: "Pending Action",
+            value: statsData?.pendingRequests?.toString() || "0",
+            change: "Current",
+            trend: "up",
+            icon: Clock,
+            color: "text-orange-600",
+            bg: "bg-orange-50",
+            href: "/admin/orders"
+        },
+        {
+            name: "Total Clients",
+            value: statsData?.clientCount?.toString() || "0",
+            change: "+8.4%",
+            trend: "up",
+            icon: Users,
+            color: "text-green-600",
+            bg: "bg-green-50",
+            href: "/admin/users"
+        },
+        {
+            name: "Total Volume",
+            value: `$${statsData?.totalVolume?.toLocaleString() || "0"}`,
+            change: "+5%",
+            trend: "up",
+            icon: CreditCard,
+            color: "text-purple-600",
+            bg: "bg-purple-50",
+            href: "/admin/payments"
+        },
+    ];
+
+
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {stats.map((stat) => {
+                {dashboardStats.map((stat) => {
                     const Icon = stat.icon;
                     return (
-                        <div key={stat.name} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                        <Link
+                            key={stat.name}
+                            href={stat.href}
+                            className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all hover:border-[#ea580c]/50 group"
+                        >
                             <div className="flex items-center justify-between mb-4">
-                                <div className={cn("p-2 rounded-xl", stat.bg)}>
-                                    <Icon className={cn("w-6 h-6", stat.color)} />
+                                <div className={cn("p-2 rounded-xl transition-colors", stat.bg, "group-hover:bg-[#ea580c]/10")}>
+                                    <Icon className={cn("w-6 h-6", stat.color, "group-hover:text-[#ea580c]")} />
                                 </div>
                                 <div className={cn(
                                     "flex items-center text-xs font-bold px-2 py-1 rounded-full",
                                     stat.trend === "up" ? "text-green-600 bg-green-50" : "text-red-600 bg-red-50"
                                 )}>
-                                    {stat.trend === "up" ? <ArrowUpRight className="w-3 h-3 mr-1" /> : <ArrowDownRight className="w-3 h-3 mr-1" />}
+                                    <ArrowUpRight className="w-3 h-3 mr-1" />
                                     {stat.change}
                                 </div>
                             </div>
                             <p className="text-slate-500 text-sm font-medium">{stat.name}</p>
                             <h3 className="text-2xl font-bold text-slate-800 mt-1">{stat.value}</h3>
-                        </div>
+                        </Link>
                     );
                 })}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Recent Activity */}
+                {/* Recent Activity - NOW REAL DATA */}
                 <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                     <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-                        <h3 className="text-lg font-bold text-slate-800">Recent User Activities</h3>
-                        <button className="text-[#ea580c] text-sm font-bold hover:underline">View All</button>
+                        <h3 className="text-lg font-bold text-slate-800">Recent Service Requests</h3>
+                        <Link href="/admin/orders" className="text-[#ea580c] text-sm font-bold hover:underline">View All</Link>
                     </div>
                     <div className="divide-y divide-slate-100">
-                        {recentActivities.map((activity) => (
-                            <div key={activity.id} className="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold">
-                                        {activity.user.split(' ').map(n => n[0]).join('')}
+                        {isLoading ? (
+                            <div className="p-6 text-center text-slate-500">Loading requests...</div>
+                        ) : requests.length === 0 ? (
+                            <div className="p-6 text-center text-slate-500">No requests found.</div>
+                        ) : (
+                            requests.slice(0, 5).map((req) => (
+                                <div key={req.id} className="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold">
+                                            {req.user?.name ? req.user.name.charAt(0) : "U"}
+                                        </div>
+                                        <div>
+                                            <h4 className="text-sm font-bold text-slate-800">{req.user?.name || "Unknown User"}</h4>
+                                            <p className="text-xs text-slate-500">Submitted {req.type} Request</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h4 className="text-sm font-bold text-slate-800">{activity.user}</h4>
-                                        <p className="text-xs text-slate-500">{activity.action}</p>
+                                    <div className="text-right">
+                                        <span className={cn("text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md",
+                                            req.status === 'PENDING' ? "bg-orange-50 text-orange-600" :
+                                                req.status === 'COMPLETED' ? "bg-green-50 text-green-600" : "bg-slate-50 text-slate-600"
+                                        )}>
+                                            {req.status}
+                                        </span>
+                                        <p className="text-[10px] text-slate-400 mt-1">
+                                            {new Date(req.createdAt).toLocaleDateString()}
+                                        </p>
                                     </div>
                                 </div>
-                                <div className="text-right">
-                                    <span className={cn("text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md", activity.statusColor)}>
-                                        {activity.status}
-                                    </span>
-                                    <p className="text-[10px] text-slate-400 mt-1">{activity.time}</p>
-                                </div>
-                            </div>
-                        ))}
+                            ))
+                        )}
                     </div>
                 </div>
 
-                {/* Quick Insights */}
+                {/* Quick Insights (Static for now, but complementary) */}
                 <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-8 text-white shadow-xl flex flex-col justify-between">
                     <div>
                         <div className="flex items-center gap-2 mb-6">
@@ -135,38 +172,6 @@ export default function AdminDashboard() {
                                 <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
                                     <div className="h-full bg-green-500 w-[92%]"></div>
                                 </div>
-                            </div>
-                            <div className="space-y-2">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-slate-400">Response Time</span>
-                                    <span className="text-white font-bold">4.2h</span>
-                                </div>
-                                <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
-                                    <div className="h-full bg-[#ea580c] w-[75%]"></div>
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-slate-400">Customer Satisfaction</span>
-                                    <span className="text-white font-bold">4.8/5</span>
-                                </div>
-                                <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
-                                    <div className="h-full bg-blue-500 w-[96%]"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="mt-8 pt-8 border-t border-slate-700">
-                        <h4 className="text-sm font-bold mb-4">Urgent Actions</h4>
-                        <div className="space-y-3">
-                            <div className="flex items-center gap-3 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-xs text-red-200">
-                                <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                                <span>3 Office Actions require response within 48h</span>
-                            </div>
-                            <div className="flex items-center gap-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-xl text-xs text-yellow-200">
-                                <Clock className="w-4 h-4 flex-shrink-0" />
-                                <span>8 Renewals pending for next week</span>
                             </div>
                         </div>
                     </div>

@@ -35,7 +35,7 @@ export default function DMCAHero() {
 
                         <div className="flex flex-col sm:flex-row gap-4 pt-6">
                             <a
-                                href="#start"
+                                href="/dmca/questionnaire"
                                 className="bg-[#ea580c] hover:bg-[#c2410c] text-white font-bold py-4 px-8 rounded-md shadow-lg hover:shadow-xl transition-all text-center"
                             >
                                 Start Your DMCA Takedown Today

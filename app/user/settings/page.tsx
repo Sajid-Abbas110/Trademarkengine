@@ -95,13 +95,19 @@ export default function SettingsPage() {
 
                 <div className="p-8 space-y-6">
                     <div className="flex items-center gap-6 mb-8">
-                        <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center text-2xl font-bold text-slate-400">
+                        <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center text-2xl font-bold text-slate-400 border-2 border-slate-50 shadow-inner">
                             {user?.name?.[0] || "U"}
                         </div>
                         <div>
-                            <button type="button" className="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-800 transition-colors">
-                                Change Avatar
-                            </button>
+                            <label>
+                                <input type="file" className="hidden" onChange={(e) => {
+                                    if (e.target.files?.[0]) alert("File selected: Simulation successful!");
+                                }} />
+                                <div className="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-800 transition-colors cursor-pointer inline-block">
+                                    Change Avatar
+                                </div>
+                            </label>
+                            <p className="text-[10px] text-slate-400 mt-2">JPG, PNG or GIF. Max 5MB.</p>
                         </div>
                     </div>
 

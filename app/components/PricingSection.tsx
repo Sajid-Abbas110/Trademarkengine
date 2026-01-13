@@ -9,6 +9,7 @@ interface PricingPlan {
     features: string[];
     notIncluded: string[];
     cta: string;
+    link?: string;
     popular: boolean;
 }
 
@@ -110,7 +111,7 @@ export default function PricingSection({
                             <p className="text-xs text-slate-500 mb-8 uppercase font-semibold">{plan.description}</p>
 
                             <Link
-                                href="/registration/new"
+                                href={plan.link || "/registration/new"}
                                 className={cn(
                                     "block w-full text-center py-4 rounded-lg font-bold transition-colors mb-8",
                                     plan.popular

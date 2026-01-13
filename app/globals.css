@@ -62,20 +62,34 @@ body {
   font-family: var(--font-sans);
 }
 
-@layer utilities {
-  .container-custom {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
-  
-  .btn-primary {
-    @apply bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold px-6 py-3 rounded-md text-center inline-flex items-center justify-center;
-  }
-  
-  .btn-outline {
-    @apply border-2 border-primary text-primary hover:bg-primary/5 transition-all duration-300 font-semibold px-6 py-3 rounded-md text-center inline-flex items-center justify-center;
-  }
+@utility container-custom {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
 
-  .card-hover {
-    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
-  }
+@utility btn-primary {
+  @apply bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold px-6 py-3 rounded-md text-center inline-flex items-center justify-center;
+}
+
+@utility btn-outline {
+  @apply border-2 border-primary text-primary hover:bg-primary/5 transition-all duration-300 font-semibold px-6 py-3 rounded-md text-center inline-flex items-center justify-center;
+}
+
+@utility card-hover {
+  @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+}
+
+/* Global Input Visibility Fix */
+input:not([type="checkbox"]):not([type="radio"]), 
+textarea, 
+select {
+  color: #0f172a !important; /* Force Slate 900 for readability on light backgrounds */
+}
+
+input::placeholder, 
+textarea::placeholder {
+  color: #94a3b8 !important; /* Force Slate 400 for placeholder readability */
+}
+
+label {
+  color: #1e293b; /* Slate 800 for labels */
 }

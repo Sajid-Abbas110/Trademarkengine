@@ -52,7 +52,7 @@ export default function OfficeActionPage() {
                                 </ul>
 
                                 <Link
-                                    href="/registration"
+                                    href="/office-action/questionnaire"
                                     className="inline-block w-fit bg-[#ea580c] text-white font-bold py-3 px-8 rounded shadow hover:bg-[#c2410c] transition-colors mb-4 text-sm"
                                 >
                                     Respond to My Office Action

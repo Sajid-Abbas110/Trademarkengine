@@ -263,7 +263,7 @@ export default function RegistrationPage() {
                 <div className="container mx-auto px-4 max-w-5xl pb-20 text-gray-600 items-center">
                     <span>
                         *The law firm responsible for the portion of this page constituting an advertisement is Swyft Legal, LLC who can be reached at
-                        <span className="text-orange-500">support@swyftlegal.com</span>. Swyft Legal, LLC is licensed by the Arizona Supreme Court under license number 70173. <br />All legal services provided in connection with the attorney-led trademark process are provided by Swyft Legal, LLC. Trademark Engine is an affiliate of Swyft Legal, LLC.
+                        <span className="text-orange-500">sajid.abbas.mme@gmail.com</span>. Swyft Legal, LLC is licensed by the Arizona Supreme Court under license number 70173. <br />All legal services provided in connection with the attorney-led trademark process are provided by Swyft Legal, LLC. Trademark Engine is an affiliate of Swyft Legal, LLC.
                         *After a 7-day free trial, your Brand Protection+ subscription will automatically renew at $199 quarterly.
 
                         *The USPTO charges a government filing fee of $350 per class. If your application uses a custom description instead of entries from the USPTO's ID Manual, the fee increases to $550 per class. Swyft Legal also charges a $100 legal fee per class for attorney review and class-specific legal services. This legal fee is separate from—and in addition to—the cited package price and any government filing fees.

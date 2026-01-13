@@ -1,91 +1,32 @@
-import { NextResponse, NextRequest } from "next/server";
-import db from "@/lib/db";
-
-function resolveParams(maybePromise: any) {
-    return maybePromise && typeof maybePromise.then === "function" ? maybePromise : Promise.resolve(maybePromise);
-}
-
-export async function DELETE(
-    request: NextRequest,
-    context: any
-) {
-    try {
-        const params = await resolveParams(context.params);
-        const { id } = params;
-
-        // Check if user exists
-        const user = await db.user.findUnique({
-            where: { id }
-        });
-
-        if (!user) {
-            return NextResponse.json(
-                { error: "User not found" },
-                { status: 404 }
-            );
-        }
-
-        // Delete user (trademarks will be cascade deleted due to relation)
-        await db.user.delete({
-            where: { id }
-        });
-
-        return NextResponse.json({ success: true, message: "User deleted successfully" });
-    } catch (error) {
-        console.error("Error deleting user:", error);
-        return NextResponse.json(
-            { error: "Failed to delete user" },
-            { status: 500 }
-        );
-    }
-}
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/db";
 
 export async function PATCH(
-    request: NextRequest,
-    context: any
+    req: Request,
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const params = await resolveParams(context.params);
-        const { id } = params;
-        const body = await request.json();
+        const { id } = await params;
+        const body = await req.json();
         const { name, email, role } = body;
 
-        // Check if user exists
-        const user = await db.user.findUnique({
-            where: { id }
-        });
+        console.log(`[PATCH] Updating User: ${id}`, { name, email, role });
 
-        if (!user) {
-            return NextResponse.json(
-                { error: "User not found" },
-                { status: 404 }
-            );
-        }
-
-        // Update user
-        const updatedUser = await db.user.update({
+        const updatedUser = await prisma.user.update({
             where: { id },
             data: {
-                ...(name && { name }),
-                ...(email && { email }),
-                ...(role && { role })
+                name,
+                email,
+                role
             }
         });
 
+        return NextResponse.json({ success: true, user: updatedUser });
+    } catch (error: any) {
+        console.error("Failed to update user:", error);
         return NextResponse.json({
-            success: true,
-            user: {
-                id: updatedUser.id,
-                name: updatedUser.name,
-                email: updatedUser.email,
-                role: updatedUser.role
-            }
-        });
-    } catch (error) {
-        console.error("Error updating user:", error);
-        return NextResponse.json(
-            { error: "Failed to update user" },
-            { status: 500 }
-        );
+            error: "Failed to update user profile",
+            details: error.message || String(error)
+        }, { status: 500 });
     }
 }

@@ -53,7 +53,7 @@ export default function CompSearchHero() {
                         </div>
 
                         <div className="pt-6">
-                            <a href="#pricing" className="bg-[#ea580c] hover:bg-[#c2410c] text-white font-bold py-4 px-8 rounded-md shadow-lg hover:shadow-xl transition-all inline-block">
+                            <a href="/comprehensive-search/questionnaire" className="bg-[#ea580c] hover:bg-[#c2410c] text-white font-bold py-4 px-8 rounded-md shadow-lg hover:shadow-xl transition-all inline-block">
                                 Start Your Comprehensive Search
                             </a>
                         </div>
@@ -80,9 +80,7 @@ export default function CompSearchHero() {
                                 <div className="w-3 h-3 rounded-full bg-green-500"></div>
                                 <div className="ml-4 w-1/2 h-4 bg-slate-700 rounded-full opacity-50"></div>
                             </div>
-                            <div className="text-slate-500 font-semibold group-hover:scale-105 transition-transform duration-500">
-                                Search Dashboard Preview
-                            </div>
+                            <Image src="/search.png" fill className="object-cover" alt="comprehensive-search-dashboard" />
                             {/* <Image src="/search-dashboard.png" fill className="object-cover" /> if available */}
                         </div>
                         {/* Floating elements */}

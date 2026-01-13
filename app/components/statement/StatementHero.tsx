@@ -19,7 +19,7 @@ export default function StatementHero() {
 
                         <div className="flex flex-col sm:flex-row gap-4 pt-4">
                             <a
-                                href="#process"
+                                href="/statement-of-use/questionnaire"
                                 className="bg-[#ea580c] hover:bg-[#c2410c] text-white font-bold py-4 px-8 rounded-md shadow-lg hover:shadow-xl transition-all text-center"
                             >
                                 File your Statement of Use

@@ -54,7 +54,7 @@ export default function CopyrightPage() {
                             The sooner you protect your music, art, or book, the better.
                         </p>
                         <a
-                            href="/registration/new"
+                            href="/copyright/questionnaire"
                             className="inline-block bg-[#ea580c] hover:bg-[#c2410c] text-white font-bold py-4 px-10 rounded-md shadow-lg hover:shadow-xl transition-all"
                         >
                             Start My Copyright Registration

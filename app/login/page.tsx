@@ -106,14 +106,14 @@ function LoginForm() {
                     <form onSubmit={handleLogin} className="space-y-6">
                         <div className="space-y-4">
                             <div>
-                                <label className="text-sm font-bold text-slate-700">Email</label>
+                                <label className="text-sm font-bold text-slate-900">Email</label>
                                 <div className="relative">
                                     <Mail className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                                     <input
                                         type="email"
                                         required
                                         placeholder={role === "admin" ? "admin@company.com" : "user@company.com"}
-                                        className="w-full pl-12 pr-4 py-4 bg-slate-50 border rounded-xl"
+                                        className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-[#ea580c] focus:bg-white transition-all text-slate-900 placeholder:text-slate-400"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                     />
@@ -121,14 +121,14 @@ function LoginForm() {
                             </div>
 
                             <div>
-                                <label className="text-sm font-bold text-slate-700">Password</label>
+                                <label className="text-sm font-bold text-slate-900">Password</label>
                                 <div className="relative">
                                     <Lock className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                                     <input
                                         type="password"
                                         required
                                         placeholder="••••••••"
-                                        className="w-full pl-12 pr-4 py-4 bg-slate-50 border rounded-xl"
+                                        className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-[#ea580c] focus:bg-white transition-all text-slate-900 placeholder:text-slate-400"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                     />

@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Settings, Phone, Facebook, Linkedin, Twitter, CreditCard } from "lucide-react";
+import { Phone, Facebook, Linkedin, Twitter, CreditCard } from "lucide-react";
+import Logo from "./Logo";
 
 export default function Footer() {
     return (
@@ -9,12 +10,7 @@ export default function Footer() {
                     {/* Brand & Contact Column */}
                     <div className="col-span-1">
                         <Link href="/" className="flex items-center gap-2 mb-8 group">
-                            <div className="text-[#ea580c]">
-                                <Settings className="w-8 h-8 fill-current" />
-                            </div>
-                            <span className="text-xl font-bold text-white tracking-tight">
-                                trademark <span className="text-slate-300">engine</span>
-                            </span>
+                            <Logo textClassName="text-white" />
                         </Link>
 
                         <div className="mb-6">
@@ -24,16 +20,16 @@ export default function Footer() {
                             </p>
                         </div>
 
-                        <div className="bg-[#1e293b] p-4 rounded-lg flex items-center gap-4 inline-flex">
+                        <a href="tel:03142281115" className="bg-[#1e293b] p-4 rounded-lg flex items-center gap-4 inline-flex hover:bg-[#334155] transition-colors">
                             <div className="bg-[#334155] p-2 rounded-md">
                                 <Phone className="w-5 h-5 text-white" />
                             </div>
                             <div>
                                 <p className="text-xs text-slate-400">Call Us</p>
-                                <p className="font-bold text-lg">(877) 721-4579</p>
-                                <p className="text-xs text-slate-400">Mon-Fri 9AM-6PM CST</p>
+                                <p className="font-bold text-lg">03142281115</p>
+                                <p className="text-xs text-slate-400">Mon-Fri 9AM-6PM</p>
                             </div>
-                        </div>
+                        </a>
                     </div>
 
                     {/* Quick Links Column */}

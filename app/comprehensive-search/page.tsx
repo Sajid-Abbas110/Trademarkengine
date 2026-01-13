@@ -51,6 +51,7 @@ export default function ComprehensiveSearchPage() {
                 "Global Search"
             ],
             cta: "Get Started",
+            link: "/comprehensive-search/questionnaire",
             popular: false,
         },
         {
@@ -67,6 +68,7 @@ export default function ComprehensiveSearchPage() {
                 "Global Search"
             ],
             cta: "Go Common",
+            link: "/comprehensive-search/questionnaire",
             popular: true,
         },
         {
@@ -81,6 +83,7 @@ export default function ComprehensiveSearchPage() {
             ],
             notIncluded: [],
             cta: "Go Global",
+            link: "/comprehensive-search/questionnaire",
             popular: false,
         }
     ];
@@ -165,7 +168,7 @@ export default function ComprehensiveSearchPage() {
                             Don't leave your brand vulnerable. Start your comprehensive search now.
                         </p>
                         <a
-                            href="/registration"
+                            href="/comprehensive-search/questionnaire"
                             className="inline-block bg-[#ea580c] hover:bg-[#c2410c] text-white font-bold py-4 px-10 rounded-md shadow-lg hover:shadow-xl transition-all"
                         >
                             Start My Comprehensive Search
