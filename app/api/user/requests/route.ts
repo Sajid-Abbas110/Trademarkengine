@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
 import { getSession } from "@/lib/auth";
 
 async function getUserIdFromRequest() {
@@ -14,6 +13,9 @@ export async function GET() {
         if (!userId) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
+
+        // Lazy-load Prisma
+        const { prisma } = await import('@/lib/db');
 
         const requests = await prisma.serviceRequest.findMany({
             where: {

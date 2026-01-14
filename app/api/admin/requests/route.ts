@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
 
 export async function GET(req: Request) {
     try {
         // In a real app, verify Admin session here
+
+        // Lazy-load Prisma
+        const { prisma } = await import('@/lib/db');
 
         // Fetch all requests, newest first
         const requests = await prisma.serviceRequest.findMany({
@@ -26,6 +28,9 @@ export async function GET(req: Request) {
 
         // Calculate total volume by parsing the data JSON
         const totalVolume = requests.reduce((sum, r) => {
+            // Exclude refunded or rejected requests from volume
+            if (r.status === "REFUNDED" || r.status === "REJECTED") return sum;
+
             try {
                 const parsedData = JSON.parse(r.data);
                 return sum + (Number(parsedData.total) || 0);

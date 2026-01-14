@@ -9,8 +9,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "TradeMark Engine | Protect Your Brand Today",
-  description: "Fast, easy, and affordable trademark registration services. Start protecting your business name, slogan, or logo now.",
+  title: "BrandGuard | Protect Your Brand Today",
+  description: "Fast, easy, and affordable trademark registration services. Start protecting your business name, slogan, or logo now with BrandGuard.",
 };
 
 export default function RootLayout({
@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${poppins.variable} font-sans antialiased`}
         suppressHydrationWarning

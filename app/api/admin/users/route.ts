@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
 import bcrypt from "bcryptjs";
 
 export async function GET() {
     try {
+        // Lazy-load Prisma
+        const { prisma } = await import('@/lib/db');
+
         // Fetch all users with role 'client'
         const users = await prisma.user.findMany({
             where: {
@@ -51,6 +53,9 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
         }
 
+        // Lazy-load Prisma
+        const { default: prisma } = await import('@/lib/db');
+
         const existingUser = await prisma.user.findUnique({
             where: { email }
         });
@@ -80,6 +85,10 @@ export async function POST(req: Request) {
         });
     } catch (error: any) {
         console.error("Failed to create user:", error);
+        if (error instanceof Error) {
+            console.error("Error message:", error.message);
+            console.error("Error stack:", error.stack);
+        }
         return NextResponse.json({
             error: "Failed to create user",
             details: error.message || String(error)

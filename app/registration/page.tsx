@@ -19,34 +19,34 @@ export default function RegistrationPage() {
                     <div className="container mx-auto px-4 py-16 md:py-24">
                         <div className="flex flex-col md:flex-row items-center gap-12 max-w-6xl mx-auto">
                             <div className="w-full md:w-1/2">
-                                <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-tight">
+                                <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-tight">
                                     Register your name, slogan, or logo today.
                                 </h1>
-                                <p className="text-lg text-slate-600 mb-8">
+                                <p className="text-base md:text-lg text-slate-600 mb-8">
                                     Protect your brand online in just minutes using our simplified trademark application. It's fast, easy, and affordable.
                                 </p>
                                 <div className="space-y-4 mb-8">
-                                    <div className="flex items-center gap-2 text-slate-700">
-                                        <CheckCircle2 className="w-5 h-5 text-green-500" />
+                                    <div className="flex items-center gap-2 text-slate-700 text-sm md:text-base">
+                                        <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
                                         <span>Trusted by over 100,000 businesses</span>
                                     </div>
-                                    <div className="flex items-center gap-2 text-slate-700">
-                                        <CheckCircle2 className="w-5 h-5 text-green-500" />
+                                    <div className="flex items-center gap-2 text-slate-700 text-sm md:text-base">
+                                        <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
                                         <span>5-star rated support team</span>
                                     </div>
-                                    <div className="flex items-center gap-2 text-slate-700">
-                                        <CheckCircle2 className="w-5 h-5 text-green-500" />
+                                    <div className="flex items-center gap-2 text-slate-700 text-sm md:text-base">
+                                        <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
                                         <span>Secure & confidential process</span>
                                     </div>
                                 </div>
                                 <Link
                                     href="/registration/new"
-                                    className="inline-block bg-[#ea580c] text-white font-bold py-4 px-10 rounded-md shadow-lg hover:bg-[#c2410c] transition-colors"
+                                    className="block md:inline-block md:w-auto w-full text-center bg-[#ea580c] text-white font-bold py-4 px-10 rounded-md shadow-lg hover:bg-[#c2410c] transition-colors"
                                 >
                                     Start My Application
                                 </Link>
 
-                                <div className="mt-8 flex items-center gap-4">
+                                <div className="mt-8 flex flex-wrap items-center gap-4">
                                     <div className="flex items-center bg-white border border-slate-200 rounded-lg px-4 py-2 shadow-sm">
                                         <span className="font-bold text-slate-900 text-xl mr-2">4.8</span>
                                         <div className="flex text-yellow-400">
@@ -56,7 +56,7 @@ export default function RegistrationPage() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="w-full md:w-1/2 relative h-[500px] rounded-2xl overflow-hidden shadow-2xl">
+                            <div className="w-full md:w-1/2 relative h-[300px] md:h-[500px] rounded-2xl overflow-hidden shadow-2xl mt-8 md:mt-0">
                                 <div className="absolute inset-0 bg-slate-200">
                                     {/* Placeholder for Hero Image - Woman in shop */}
                                     <Image
@@ -142,9 +142,9 @@ export default function RegistrationPage() {
                 </section>
 
                 {/* Why Get A Trademark */}
-                <section className="py-24 bg-white">
+                <section className="py-16 md:py-24 bg-white">
                     <div className="container mx-auto px-4 max-w-6xl">
-                        <div className="flex flex-col md:flex-row items-center gap-16">
+                        <div className="flex flex-col md:flex-row items-center gap-8 md:gap-16">
                             <div className="w-full md:w-1/2">
                                 {/* Abstract Graphic */}
                                 <div className="relative bg-slate-50 rounded-2xl p-8 border border-slate-100 shadow-lg">
@@ -189,10 +189,10 @@ export default function RegistrationPage() {
                 </section>
 
                 {/* Why Run Search */}
-                <section className="py-24 bg-slate-50 from-slate-50 to-white bg-gradient-to-b">
+                <section className="py-16 md:py-24 bg-slate-50 from-slate-50 to-white bg-gradient-to-b">
                     <div className="container mx-auto px-4 max-w-6xl">
-                        <div className="flex flex-col md:flex-row-reverse items-center gap-16">
-                            <div className="w-full md:w-1/2 text-center md:text-right">
+                        <div className="flex flex-col md:flex-row-reverse items-center gap-12 md:gap-16">
+                            <div className="w-full md:w-1/2 text-center md:text-right pt-8 md:pt-0">
                                 {/* Clock Graphic */}
                                 <div className="relative inline-block">
                                     <Clock className="w-64 h-64 text-slate-200" strokeWidth={1} />

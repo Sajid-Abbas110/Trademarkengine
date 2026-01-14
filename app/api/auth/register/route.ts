@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import db from "@/lib/db";
 import { hashPassword, login } from "@/lib/auth";
 
 export async function POST(request: Request) {
@@ -13,6 +12,9 @@ export async function POST(request: Request) {
                 { status: 400 }
             );
         }
+
+        // Lazy-load Prisma
+        const { default: db } = await import('@/lib/db');
 
         // Check if user exists
         const existingUser = await db.user.findUnique({

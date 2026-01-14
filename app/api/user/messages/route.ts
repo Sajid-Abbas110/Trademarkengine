@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import prisma from "@/lib/db";
 import { getSession } from "@/lib/auth";
 
 export async function GET(req: Request) {
@@ -8,6 +7,9 @@ export async function GET(req: Request) {
         if (!session?.user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
+
+        // Lazy-load Prisma
+        const { default: prisma } = await import('@/lib/db');
 
         const messages = await prisma.message.findMany({
             where: {
@@ -37,6 +39,9 @@ export async function POST(req: Request) {
 
         const body = await req.json();
         const { messageId, isRead } = body;
+
+        // Lazy-load Prisma
+        const { default: prisma } = await import('@/lib/db');
 
         if (!messageId) {
             return NextResponse.json({ error: "Missing message ID" }, { status: 400 });

@@ -1,28 +1,8 @@
-import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
+import { encrypt, decrypt } from "./auth-jwt";
 
-const SECRET_KEY = "secret-key-change-me-in-production"; // In real app, use process.env.JWT_SECRET
-const key = new TextEncoder().encode(SECRET_KEY);
-
-export async function encrypt(payload: any) {
-    return await new SignJWT(payload)
-        .setProtectedHeader({ alg: "HS256" })
-        .setIssuedAt()
-        .setExpirationTime("24h") // Session expires in 24 hours
-        .sign(key);
-}
-
-export async function decrypt(input: string): Promise<any> {
-    try {
-        const { payload } = await jwtVerify(input, key, {
-            algorithms: ["HS256"],
-        });
-        return payload;
-    } catch (error) {
-        return null;
-    }
-}
+export { encrypt, decrypt }; // Re-export for compatibility
 
 export async function login(userData: { id: string; email: string; name: string; role: string }) {
     const session = await encrypt({ user: userData });
@@ -45,9 +25,22 @@ export async function logout() {
 
 export async function getSession() {
     const cookieStore = await cookies();
-    const session = cookieStore.get("session")?.value;
-    if (!session) return null;
-    return await decrypt(session);
+    const sessionCookie = cookieStore.get("session");
+    // console.log("[Auth] Session cookie present:", !!sessionCookie);
+
+    const session = sessionCookie?.value;
+    if (!session) {
+        console.log("[Auth] No session cookie value found.");
+        return null;
+    }
+
+    const payload = await decrypt(session);
+    if (!payload) {
+        console.log("[Auth] Session decryption failed.");
+    } else {
+        // console.log("[Auth] Session decrypted successfully:", payload.user?.email);
+    }
+    return payload;
 }
 
 export async function hashPassword(password: string) {

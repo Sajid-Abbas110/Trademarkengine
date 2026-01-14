@@ -13,41 +13,42 @@ interface LogoProps {
 export default function Logo({ className, iconClassName, textClassName, showText = true }: LogoProps) {
     return (
         <div className={cn("flex items-center gap-2", className)}>
-            {/* Custom SVG Logo Motif: TE integrated with Gear/Engine */}
+            {/* Custom SVG Logo Motif: Shield with B */}
             <svg
                 viewBox="0 0 100 100"
                 className={cn("w-10 h-10 drop-shadow-sm", iconClassName)}
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
             >
-                {/* Gear Outer Ring */}
+                {/* Shield Outline */}
                 <path
-                    d="M50 10V20M50 80V90M10 50H20M80 50H90M21.7 21.7L28.8 28.8M71.2 71.2L78.3 78.3M21.7 78.3L28.8 71.2M71.2 28.8L78.3 21.7"
+                    d="M50 88C50 88 18 75 18 30V15H82V30C82 75 50 88 50 88Z"
                     stroke="#ea580c"
                     strokeWidth="8"
                     strokeLinecap="round"
+                    strokeLinejoin="round"
                 />
-                <circle cx="50" cy="50" r="30" stroke="#0f172a" strokeWidth="8" />
 
-                {/* Stylized TE */}
+                {/* Inner Elements / B monogram hint */}
                 <path
-                    d="M35 40H65M50 40V65M65 52H50"
-                    stroke="#ea580c"
+                    d="M38 35H60C64 35 64 45 60 45H38V35Z"
+                    stroke="#0f172a"
                     strokeWidth="6"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                 />
                 <path
-                    d="M40 65H60"
+                    d="M38 45H62C66 45 66 58 62 58H38V45Z"
                     stroke="#0f172a"
-                    strokeWidth="4"
+                    strokeWidth="6"
                     strokeLinecap="round"
+                    strokeLinejoin="round"
                 />
             </svg>
 
             {showText && (
                 <span className={cn("text-xl font-bold tracking-tight text-slate-800", textClassName)}>
-                    trademark <span className="text-[#ea580c]">engine</span>
+                    Brand <span className="text-[#ea580c]">Guard</span>
                 </span>
             )}
         </div>

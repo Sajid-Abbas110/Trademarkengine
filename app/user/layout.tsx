@@ -21,7 +21,7 @@ export default function UserLayout({
 }) {
     const pathname = usePathname();
     const router = useRouter();
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Default closed on mobile
     const [user, setUser] = useState<{ name: string; email: string } | null>(null);
 
     React.useEffect(() => {
@@ -58,8 +58,8 @@ export default function UserLayout({
         <div className="min-h-screen bg-slate-50 flex">
             {/* Sidebar */}
             <aside className={cn(
-                "bg-slate-900 text-white fixed top-0 left-0 z-30 h-screen overflow-y-auto transition-all duration-300 flex flex-col justify-between",
-                isSidebarOpen ? "w-64" : "w-20"
+                "bg-slate-900 text-white fixed inset-y-0 left-0 z-30 overflow-y-auto transition-all duration-300 flex flex-col justify-between transform lg:translate-x-0 w-64",
+                isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:w-20"
             )}>
                 <div>
                     {/* Logo Area */}
@@ -143,21 +143,27 @@ export default function UserLayout({
             {/* Main Content */}
             <main
                 className={cn(
-                    "flex-1 overflow-auto w-full transition-all duration-300",
-                    isSidebarOpen ? "ml-64" : "ml-20"
+                    "flex-1 overflow-auto w-full transition-all duration-300 min-h-screen",
+                    isSidebarOpen ? "lg:ml-64" : "lg:ml-20"
                 )}
             >
 
                 {/* Header */}
-                <header className="h-20 bg-white border-b border-slate-200 sticky top-0 z-20 px-8 flex items-center justify-between">
+                <header className="h-20 bg-white border-b border-slate-200 sticky top-0 z-20 px-4 md:px-8 flex items-center justify-between">
                     <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                            className="p-2 -ml-2 text-slate-500 hover:bg-slate-100 rounded-lg lg:hidden"
+                        >
+                            <LayoutDashboard className="w-6 h-6" />
+                        </button>
                         <h1 className="text-xl font-bold text-slate-800 capitalize">
                             {pathname?.split("/").pop() || "Dashboard"}
                         </h1>
                     </div>
 
                     <div className="flex items-center gap-6">
-                        <div className="relative">
+                        <div className="relative hidden md:block">
                             <input
                                 type="text"
                                 placeholder="Search..."
@@ -174,10 +180,18 @@ export default function UserLayout({
                 </header>
 
                 {/* Page Content */}
-                <div className="p-8 max-w-7xl mx-auto">
+                <div className="p-4 md:p-8 max-w-7xl mx-auto">
                     {children}
                 </div>
             </main>
+
+            {/* Mobile Overlay */}
+            {isSidebarOpen && (
+                <div
+                    className="fixed inset-0 bg-slate-900/50 z-20 lg:hidden backdrop-blur-sm"
+                    onClick={() => setIsSidebarOpen(false)}
+                />
+            )}
         </div>
     );
 }

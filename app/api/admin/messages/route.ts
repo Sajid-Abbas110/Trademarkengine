@@ -1,16 +1,22 @@
 import { NextResponse } from "next/server";
-import prisma from "@/lib/db";
 import { getSession } from "@/lib/auth";
 
 export async function POST(req: Request) {
     try {
         const session = await getSession();
+        console.log("[API/messages] Session retrieved:", JSON.stringify(session, null, 2));
+
         if (!session?.user || session.user.role !== "admin") {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+            const role = session?.user?.role;
+            console.log(`[API/messages] Unauthorized access attempt. Role: ${role}, UserID: ${session?.user?.id}`);
+            return NextResponse.json({ error: "Unauthorized", debug_role: role }, { status: 401 });
         }
 
         const body = await req.json();
         const { serviceRequestId, receiverId, content } = body;
+
+        // Lazy-load Prisma to prevent DB initialization at module import/build time
+        const { default: prisma } = await import('@/lib/db');
 
         if (!serviceRequestId || !receiverId || !content) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -38,8 +44,8 @@ export async function POST(req: Request) {
             console.error("Error stack:", error.stack);
         }
         return NextResponse.json({
-            error: "Internal Server Error",
-            details: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : String(error)) : undefined
+            error: "Failed to send message",
+            details: error instanceof Error ? error.message : String(error)
         }, { status: 500 });
     }
 }

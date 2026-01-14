@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { getSession, login } from "@/lib/auth";
-import db from "@/lib/db";
 
 export async function GET() {
     const session = await getSession();
@@ -22,6 +21,9 @@ export async function PATCH(request: Request) {
     try {
         const body = await request.json();
         const { name, email } = body;
+
+        // Lazy-load Prisma
+        const { default: db } = await import('@/lib/db');
 
         const updatedUser = await db.user.update({
             where: { id: session.user.id },

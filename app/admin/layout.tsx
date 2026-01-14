@@ -35,7 +35,17 @@ export default function AdminLayout({
 }) {
     const pathname = usePathname();
     const router = useRouter();
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    // Auto-open on desktop
+    React.useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth >= 1024) setIsSidebarOpen(true);
+        };
+        handleResize(); // Initial check
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
     const [showNotifications, setShowNotifications] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
     const [notifications, setNotifications] = useState([
@@ -43,6 +53,23 @@ export default function AdminLayout({
         { id: 2, text: "New order received #TRD-1002", time: "2 hours ago" },
         { id: 3, text: "New order received #TRD-1003", time: "3 hours ago" },
     ]);
+
+    const [user, setUser] = useState<{ name: string; email: string; role: string } | null>(null);
+
+    React.useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const res = await fetch("/api/auth/me");
+                const data = await res.json();
+                if (data.user) {
+                    setUser(data.user);
+                }
+            } catch (error) {
+                console.error("Failed to fetch user profile", error);
+            }
+        };
+        fetchUser();
+    }, []);
 
     const handleSignOut = () => {
         router.push("/");
@@ -58,7 +85,7 @@ export default function AdminLayout({
             <aside
                 className={cn(
                     "fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-slate-300 transition-transform duration-300 transform lg:relative lg:translate-x-0 outline-none",
-                    !isSidebarOpen && "-translate-x-full lg:w-20"
+                    isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:w-20"
                 )}
             >
                 <div className="h-full flex flex-col">
@@ -126,7 +153,13 @@ export default function AdminLayout({
                     <div className="flex items-center gap-4">
                         <button
                             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                            className="p-2 text-slate-500 hover:bg-slate-100 rounded-lg lg:flex hidden"
+                            className="p-2 text-slate-500 hover:bg-slate-100 rounded-lg lg:hidden"
+                        >
+                            <Menu className="w-6 h-6" />
+                        </button>
+                        <button
+                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                            className="p-2 text-slate-500 hover:bg-slate-100 rounded-lg hidden lg:flex"
                         >
                             <Menu className="w-6 h-6" />
                         </button>
@@ -199,18 +232,27 @@ export default function AdminLayout({
                                 className="flex items-center gap-2 p-1 pl-2 hover:bg-slate-100 rounded-full transition-colors"
                             >
                                 <div className="hidden lg:block text-right mr-1">
-                                    <p className="text-sm font-bold text-slate-800">Admin User</p>
-                                    <p className="text-xs text-slate-500">Super Admin</p>
+                                    <p className="text-sm font-bold text-slate-800">{user?.name || "Admin User"}</p>
+                                    <p className="text-xs text-slate-500 capitalize">{user?.role || "Super Admin"}</p>
                                 </div>
-                                <div className="w-9 h-9 bg-[#ea580c] rounded-full flex items-center justify-center text-white font-bold">
-                                    AU
+                                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm">
+                                    <img
+                                        src="/images/admin-avatar.png"
+                                        alt="Profile"
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                            e.currentTarget.style.display = 'none';
+                                            e.currentTarget.parentElement!.classList.add('bg-[#ea580c]', 'flex', 'items-center', 'justify-center', 'text-white', 'font-bold');
+                                            e.currentTarget.parentElement!.innerText = user?.name ? user.name.charAt(0).toUpperCase() : "AU";
+                                        }}
+                                    />
                                 </div>
                             </button>
                             {showUserMenu && (
                                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in slide-in-from-top-5 duration-200">
                                     <div className="p-4 border-b border-slate-100">
-                                        <p className="text-sm font-bold text-slate-800">Admin User</p>
-                                        <p className="text-xs text-slate-500">admin@trademarkengine.com</p>
+                                        <p className="text-sm font-bold text-slate-800">{user?.name || "Admin User"}</p>
+                                        <p className="text-xs text-slate-500">{user?.email || "admin@trademarkengine.com"}</p>
                                     </div>
                                     <div className="p-2">
                                         <Link href="/admin/settings" onClick={() => setShowUserMenu(false)} className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-[#ea580c] transition-colors">
@@ -244,3 +286,4 @@ export default function AdminLayout({
         </div>
     );
 }
+

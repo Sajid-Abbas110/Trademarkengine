@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import db from "@/lib/db";
 import { hashPassword } from "@/lib/auth";
 
 interface ImportUser {
@@ -25,6 +24,9 @@ export async function POST(request: Request) {
             success: [] as string[],
             failed: [] as { email: string; reason: string }[]
         };
+
+        // Lazy-load Prisma
+        const { default: db } = await import('@/lib/db');
 
         for (const userData of users) {
             try {
