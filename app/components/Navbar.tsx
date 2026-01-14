@@ -12,6 +12,7 @@ export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -97,12 +98,12 @@ export default function Navbar() {
                 {/* Left Section: Logo & Nav */}
                 <div className="flex items-center gap-12">
                     {/* Logo */}
-                    <Link href="/" className="hover:opacity-80 transition-opacity">
+                    <Link href="/" className="hover:opacity-80 transition-opacity z-50 relative">
                         <Logo />
                     </Link>
 
                     {/* Desktop Nav Links */}
-                    <div className="hidden md:flex items-center gap-8">
+                    <div className="hidden lg:flex items-center gap-8">
                         {/* Our Services Dropdown */}
                         <div
                             className="relative group"
@@ -204,8 +205,8 @@ export default function Navbar() {
                 </div>
 
                 {/* Right Section: Account & CTA */}
-                <div className="flex items-center gap-6">
-                    <Link href="/login" className="hidden md:block font-semibold text-slate-600 hover:text-[#ea580c] text-sm transition-colors">
+                <div className="hidden lg:flex items-center gap-6">
+                    <Link href="/login" className="font-semibold text-slate-600 hover:text-[#ea580c] text-sm transition-colors">
                         My Account
                     </Link>
                     <Link
@@ -214,6 +215,73 @@ export default function Navbar() {
                     >
                         {ctaInfo.text}
                     </Link>
+                </div>
+
+                {/* Mobile Menu Toggle */}
+                <button
+                    className="lg:hidden z-50 relative p-2"
+                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                >
+                    <div className="w-6 h-5 relative flex flex-col justify-between">
+                        <span className={cn("w-full h-0.5 bg-slate-800 transition-all duration-300", mobileMenuOpen && "rotate-45 translate-y-2.5")} />
+                        <span className={cn("w-full h-0.5 bg-slate-800 transition-all duration-300", mobileMenuOpen && "opacity-0")} />
+                        <span className={cn("w-full h-0.5 bg-slate-800 transition-all duration-300", mobileMenuOpen && "-rotate-45 -translate-y-2")} />
+                    </div>
+                </button>
+
+                {/* Mobile Menu Overlay */}
+                <div className={cn(
+                    "fixed inset-0 bg-white z-40 lg:hidden transition-all duration-300 px-6 py-24 flex flex-col gap-6 overflow-y-auto",
+                    mobileMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"
+                )}>
+                    {/* Mobile Services */}
+                    <div>
+                        <h3 className="text-lg font-bold text-[#ea580c] mb-4 flex items-center gap-2">
+                            <FileText className="w-5 h-5" /> Our Services
+                        </h3>
+                        <div className="grid grid-cols-1 gap-2 pl-4 border-l-2 border-slate-100">
+                            {services.map((service) => (
+                                <Link
+                                    key={service.name}
+                                    href={service.href}
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="text-slate-600 py-2 text-sm font-medium hover:text-[#ea580c]"
+                                >
+                                    {service.name}
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Mobile Resources */}
+                    <div>
+                        <h3 className="text-lg font-bold text-[#ea580c] mb-4 flex items-center gap-2">
+                            <BookOpen className="w-5 h-5" /> Resources
+                        </h3>
+                        <div className="grid grid-cols-1 gap-2 pl-4 border-l-2 border-slate-100">
+                            <Link href="/blog" onClick={() => setMobileMenuOpen(false)} className="text-slate-600 py-2 text-sm font-medium hover:text-[#ea580c]">Blog</Link>
+                            <Link href="/trademark-faqs" onClick={() => setMobileMenuOpen(false)} className="text-slate-600 py-2 text-sm font-medium hover:text-[#ea580c]">Trademark FAQs</Link>
+                            <Link href="/copyright-faqs" onClick={() => setMobileMenuOpen(false)} className="text-slate-600 py-2 text-sm font-medium hover:text-[#ea580c]">Copyright FAQs</Link>
+                            <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="text-slate-600 py-2 text-sm font-medium hover:text-[#ea580c]">About Us</Link>
+                        </div>
+                    </div>
+
+                    <div className="mt-8 flex flex-col gap-4">
+                        <Link
+                            href={ctaInfo.href}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="bg-[#ea580c] text-white font-bold text-center py-4 rounded-xl shadow-lg"
+                        >
+                            {ctaInfo.text}
+                        </Link>
+                        <Link
+                            href="/login"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="text-slate-600 font-bold text-center py-2 hover:text-[#ea580c]"
+                        >
+                            Log In to My Account
+                        </Link>
+                    </div>
                 </div>
             </div>
         </nav>

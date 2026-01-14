@@ -37,9 +37,10 @@ export default function PaymentTracking() {
 
                         return {
                             id: `TXN-${req.id.split('-').pop()?.toUpperCase() || req.id.substring(0, 4)}`,
+                            fullId: req.id,
                             customer: req.user?.name || req.user?.email || "Guest",
                             amount: `$${total.toLocaleString()}`,
-                            status: req.status === "COMPLETED" ? "Successful" : (req.status === "REJECTED" ? "Refunded" : "Pending"),
+                            status: req.status === "COMPLETED" ? "Successful" : (req.status === "REFUNDED" ? "Refunded" : (req.status === "REJECTED" ? "Rejected" : "Pending")),
                             method: "Invoice Payment",
                             date: new Date(req.createdAt).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
                             type: req.type
@@ -216,7 +217,13 @@ export default function PaymentTracking() {
                                             <div className="text-[10px] text-slate-400">{txn.type}</div>
                                         </td>
                                         <td className="px-6 py-4 text-xs text-slate-500">{txn.date}</td>
-                                        <td className="px-6 py-4 text-xs font-bold text-slate-800">{txn.amount}</td>
+                                        <td className="px-6 py-4 text-xs font-bold text-slate-800">
+                                            {txn.status === "Refunded" ? (
+                                                <span className="text-red-500 line-through decoration-red-500/50">{txn.amount}</span>
+                                            ) : (
+                                                txn.amount
+                                            )}
+                                        </td>
                                         <td className="px-6 py-4">
                                             <span className={cn(
                                                 "text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center w-fit gap-1",
@@ -225,14 +232,43 @@ export default function PaymentTracking() {
                                                         "bg-red-100 text-red-700"
                                             )}>
                                                 {txn.status === "Successful" && <CheckCircle2 className="w-2.5 h-2.5" />}
-                                                {txn.status.toUpperCase()}
+                                                {txn.status === "Refunded" ? "REFUNDED" : txn.status.toUpperCase()}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-[10px] text-slate-500">{txn.method}</td>
                                         <td className="px-6 py-4 text-right">
-                                            <button className="p-1.5 text-slate-400 hover:text-slate-600 rounded">
-                                                <MoreHorizontal className="w-4 h-4" />
-                                            </button>
+                                            <div className="flex items-center justify-end gap-2">
+                                                {txn.status === "Successful" && (
+                                                    <button
+                                                        onClick={async () => {
+                                                            if (!confirm(`Are you sure you want to refund order ${txn.id}? This will remove it from revenue stats.`)) return;
+                                                            try {
+                                                                const res = await fetch(`/api/admin/requests/${txn.fullId}`, {
+                                                                    method: "PATCH",
+                                                                    headers: { "Content-Type": "application/json" },
+                                                                    body: JSON.stringify({ status: "REFUNDED" })
+                                                                });
+                                                                if (res.ok) {
+                                                                    alert("Refund processed successfully");
+                                                                    // Simple reload to refresh data
+                                                                    window.location.reload();
+                                                                } else {
+                                                                    alert("Failed to process refund");
+                                                                }
+                                                            } catch (e) {
+                                                                console.error(e);
+                                                                alert("Error processing refund");
+                                                            }
+                                                        }}
+                                                        className="px-2 py-1 bg-red-50 text-red-600 rounded hover:bg-red-100 text-[10px] font-bold border border-red-200"
+                                                    >
+                                                        Refund
+                                                    </button>
+                                                )}
+                                                <button className="p-1.5 text-slate-400 hover:text-slate-600 rounded">
+                                                    <MoreHorizontal className="w-4 h-4" />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))

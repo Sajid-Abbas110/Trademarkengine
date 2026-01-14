@@ -54,7 +54,7 @@ export async function POST(req: Request) {
         }
 
         // Lazy-load Prisma
-        const { prisma } = await import('@/lib/db');
+        const { default: prisma } = await import('@/lib/db');
 
         const existingUser = await prisma.user.findUnique({
             where: { email }
@@ -85,6 +85,10 @@ export async function POST(req: Request) {
         });
     } catch (error: any) {
         console.error("Failed to create user:", error);
+        if (error instanceof Error) {
+            console.error("Error message:", error.message);
+            console.error("Error stack:", error.stack);
+        }
         return NextResponse.json({
             error: "Failed to create user",
             details: error.message || String(error)

@@ -22,6 +22,7 @@ const prisma = globalForPrisma.prisma ?? (() => {
 
     if (isPostgres) {
         // Use PostgreSQL adapter
+        console.log('[DB] Using PostgreSQL adapter');
         const pool = new Pool({ connectionString: postgresUrl })
         const adapter = new PrismaPg(pool)
         return new PrismaClient({
@@ -35,14 +36,27 @@ const prisma = globalForPrisma.prisma ?? (() => {
         )
     } else {
         // Use SQLite for local development
-        const { PrismaBetterSqlite3 } = require('@prisma/adapter-better-sqlite3')
-        const Database = require('better-sqlite3')
-        const db = new Database('./prisma/dev.db')
-        const adapter = new PrismaBetterSqlite3(db)
-        return new PrismaClient({
-            adapter,
-            log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-        })
+        console.log('[DB] Using SQLite adapter');
+        try {
+            const path = require('path');
+            const { PrismaBetterSqlite3 } = require('@prisma/adapter-better-sqlite3')
+            // const Database = require('better-sqlite3') 
+
+            // Resolve absolute path to dev.db to avoid cwd issues
+            const dbPath = path.join(process.cwd(), 'prisma', 'dev.db');
+            console.log(`[DB] SQLite path: ${dbPath}`);
+            // const db = new Database(dbPath) // Deprecated usage for this adapter version
+            const adapter = new PrismaBetterSqlite3({
+                url: `file:${dbPath}`
+            })
+            return new PrismaClient({
+                adapter,
+                log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+            })
+        } catch (err) {
+            console.error('[DB] Failed to initialize SQLite adapter:', err);
+            throw err;
+        }
     }
 })()
 

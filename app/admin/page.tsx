@@ -83,6 +83,21 @@ export default function AdminDashboard() {
         },
     ];
 
+    // Derived Stats for Quick Insights
+    const avgOrderValue = statsData?.totalRequests > 0
+        ? Math.round(statsData.totalVolume / statsData.totalRequests)
+        : 0;
+
+    const topService = React.useMemo(() => {
+        if (!requests.length) return "N/A";
+        const counts: Record<string, number> = {};
+        requests.forEach(r => {
+            counts[r.type] = (counts[r.type] || 0) + 1;
+        });
+        const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+        return sorted.length > 0 ? sorted[0][0] : "N/A";
+    }, [requests]);
+
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
@@ -171,6 +186,19 @@ export default function AdminDashboard() {
                                 </div>
                                 <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
                                     <div className="h-full bg-green-500 w-[92%]"></div>
+                                </div>
+                            </div>
+
+                            <div className="pt-4 border-t border-slate-700/50 space-y-4">
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="text-slate-400">Avg. Order Value</span>
+                                    <span className="text-white font-bold text-lg">${avgOrderValue.toLocaleString()}</span>
+                                </div>
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="text-slate-400">Top Service</span>
+                                    <span className="text-[#ea580c] font-bold uppercase tracking-wider text-xs bg-[#ea580c]/10 px-2 py-1 rounded">
+                                        {topService}
+                                    </span>
                                 </div>
                             </div>
                         </div>

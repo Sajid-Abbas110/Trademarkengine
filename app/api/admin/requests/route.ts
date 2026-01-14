@@ -28,6 +28,9 @@ export async function GET(req: Request) {
 
         // Calculate total volume by parsing the data JSON
         const totalVolume = requests.reduce((sum, r) => {
+            // Exclude refunded or rejected requests from volume
+            if (r.status === "REFUNDED" || r.status === "REJECTED") return sum;
+
             try {
                 const parsedData = JSON.parse(r.data);
                 return sum + (Number(parsedData.total) || 0);

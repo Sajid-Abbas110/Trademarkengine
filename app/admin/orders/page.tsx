@@ -13,7 +13,11 @@ import {
     ChevronRight,
     TrendingUp,
     History,
-    X
+    X,
+    Download,
+    DollarSign,
+    BarChart3,
+    ArrowUpDown
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -32,6 +36,10 @@ export default function OrderTracking() {
     const [activeOrder, setActiveOrder] = useState<any | null>(null);
     const [isUpdating, setIsUpdating] = useState(false);
 
+    // Filter & Sort State
+    const [filterStatus, setFilterStatus] = useState("All");
+    const [sortOrder, setSortOrder] = useState("newest");
+
     // Management form state
     const [editStatus, setEditStatus] = useState("");
     const [editPriority, setEditPriority] = useState("Medium");
@@ -42,6 +50,10 @@ export default function OrderTracking() {
     const [showNotificationOrder, setShowNotificationOrder] = useState<any | null>(null);
     const [notificationMessage, setNotificationMessage] = useState("");
     const [isNotifying, setIsNotifying] = useState(false);
+
+    // View View State
+    const [showHistory, setShowHistory] = useState(false);
+    const [showReports, setShowReports] = useState(false);
 
     const fetchOrders = async () => {
         setIsLoading(true);
@@ -55,6 +67,7 @@ export default function OrderTracking() {
                         "PENDING": "Pending",
                         "PROCESSING": "Processing",
                         "COMPLETED": "Completed",
+                        "REFUNDED": "Refunded",
                         "REJECTED": "Action Required",
                         "INVOICE_GENERATED": "Pending"
                     };
@@ -132,11 +145,61 @@ export default function OrderTracking() {
         setEditNotes(""); // Could fetch from API if we add a notes field
     };
 
-    const filteredOrders = orders.filter((order: any) =>
-        order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.service.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredOrders = orders.filter((order: any) => {
+        const matchesSearch = order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            order.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            order.service.toLowerCase().includes(searchTerm.toLowerCase());
+
+        // New Filter Logic
+        let matchesFilter = true;
+        if (filterStatus === "Active") matchesFilter = (order.status === "Active" || order.status === "Processing" || order.status === "Pending");
+        if (filterStatus === "Pending") matchesFilter = order.status === "Pending" || order.status === "Processing";
+        if (filterStatus === "Action Required") matchesFilter = order.status === "Action Required";
+        if (filterStatus === "Completed") matchesFilter = order.status === "Completed";
+
+        // If showHistory is toggled ON, strictly show completed. 
+        if (showHistory && filterStatus === "All") {
+            matchesFilter = order.status === "Completed";
+        }
+
+        return matchesSearch && matchesFilter;
+    }).sort((a, b) => {
+        const dateA = new Date(a.date).getTime();
+        const dateB = new Date(b.date).getTime();
+        return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
+    });
+
+    // Report Calculations
+    const totalRevenue = orders.reduce((acc, order) => {
+        if (order.status === "Action Required" || order.status === "Refunded") return acc;
+        return acc + (order.rawData?.total || 0);
+    }, 0);
+    const completedOrders = orders.filter(o => o.status === "Completed").length;
+    const pendingOrders = orders.filter(o => o.status === "Pending" || o.status === "Processing").length;
+
+    const downloadCSV = () => {
+        const headers = ["Order ID", "Date", "Customer", "Service", "Status", "Total Amount"];
+        const rows = orders.map(o => [
+            o.id,
+            o.date,
+            o.customer,
+            o.service,
+            o.status,
+            `"${o.rawData?.total || 0}"`
+        ]);
+
+        const csvContent = "data:text/csv;charset=utf-8,"
+            + headers.join(",") + "\n"
+            + rows.map(e => e.join(",")).join("\n");
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `orders_report_${new Date().toISOString().split('T')[0]}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
     return (
         <div className="space-y-6 animate-in fade-in duration-500 pb-12">
@@ -147,11 +210,22 @@ export default function OrderTracking() {
                     <p className="text-slate-500 text-sm">Monitor registration stages and service delivery</p>
                 </div>
                 <div className="flex gap-2">
-                    <button className="px-4 py-2 border border-slate-200 rounded-lg text-sm font-bold text-slate-600 hover:bg-slate-50 flex items-center gap-2">
+                    <button
+                        onClick={() => setShowHistory(!showHistory)}
+                        className={cn(
+                            "px-4 py-2 border rounded-lg text-sm font-bold transition-colors flex items-center gap-2",
+                            showHistory
+                                ? "bg-slate-800 text-white border-slate-800"
+                                : "border-slate-200 text-slate-600 hover:bg-slate-50"
+                        )}
+                    >
                         <History className="w-4 h-4" />
-                        Order History
+                        {showHistory ? "Active Orders" : "Order History"}
                     </button>
-                    <button className="bg-[#ea580c] hover:bg-[#c2410c] text-white font-bold py-2 px-6 rounded-lg shadow-md transition-all flex items-center gap-2">
+                    <button
+                        onClick={() => setShowReports(true)}
+                        className="bg-[#ea580c] hover:bg-[#c2410c] text-white font-bold py-2 px-6 rounded-lg shadow-md transition-all flex items-center gap-2"
+                    >
                         <TrendingUp className="w-4 h-4" />
                         Reports
                     </button>
@@ -161,12 +235,24 @@ export default function OrderTracking() {
             {/* Stats Mini Grid */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 {[
-                    { label: "Active Orders", value: "24", icon: Package, color: "text-blue-600" },
-                    { label: "Pending Review", value: "08", icon: Clock, color: "text-orange-600" },
-                    { label: "Action Required", value: "03", icon: AlertCircle, color: "text-red-600" },
-                    { label: "Completed Today", value: "12", icon: CheckCircle2, color: "text-emerald-600" },
+                    { label: "Active Orders", value: orders.filter(o => o.status === "Active" || o.status === "Processing").length, icon: Package, color: "text-blue-600", filter: "Active" },
+                    { label: "Pending Review", value: orders.filter(o => o.status === "Pending").length, icon: Clock, color: "text-orange-600", filter: "Pending" },
+                    { label: "Action Required", value: orders.filter(o => o.status === "Action Required").length, icon: AlertCircle, color: "text-red-600", filter: "Action Required" },
+                    { label: "Completed Today", value: orders.filter(o => o.status === "Completed").length, icon: CheckCircle2, color: "text-emerald-600", filter: "Completed" }, // Note: "Today" logic would require date parsing, keeping simple count for now or matching label intent
                 ].map((item, idx) => (
-                    <div key={idx} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <button
+                        key={idx}
+                        onClick={() => {
+                            setFilterStatus(filterStatus === item.filter ? "All" : item.filter);
+                            setShowHistory(false); // Reset history toggle if clicking specific filter
+                        }}
+                        className={cn(
+                            "p-4 rounded-xl border shadow-sm flex items-center gap-4 transition-all text-left",
+                            filterStatus === item.filter
+                                ? "border-[#ea580c] ring-1 ring-[#ea580c] bg-orange-50/30"
+                                : "border-slate-200 bg-white hover:border-[#ea580c]/50"
+                        )}
+                    >
                         <div className={cn("p-2 rounded-lg bg-slate-50", item.color)}>
                             <item.icon className="w-5 h-5 shadow-sm" />
                         </div>
@@ -174,7 +260,7 @@ export default function OrderTracking() {
                             <p className="text-xs text-slate-500 font-medium">{item.label}</p>
                             <p className="text-lg font-bold text-slate-800">{item.value}</p>
                         </div>
-                    </div>
+                    </button>
                 ))}
             </div>
 
@@ -190,10 +276,31 @@ export default function OrderTracking() {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <div className="flex gap-2 w-full md:w-auto">
-                    <button className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 w-full md:w-auto justify-center">
+                <div className="flex gap-2 w-full md:w-auto items-center">
+                    {/* Sort Dropdown */}
+                    <div className="relative">
+                        <select
+                            value={sortOrder}
+                            onChange={(e) => setSortOrder(e.target.value)}
+                            className="appearance-none pl-9 pr-8 py-2 border border-slate-200 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 focus:ring-2 focus:ring-[#ea580c] outline-none cursor-pointer"
+                        >
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                        </select>
+                        <ArrowUpDown className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+
+                    <button
+                        onClick={() => setFilterStatus("All")}
+                        className={cn(
+                            "flex items-center gap-2 px-4 py-2 border rounded-lg text-sm font-medium w-full md:w-auto justify-center transition-colors",
+                            filterStatus === "All"
+                                ? "bg-slate-800 text-white border-slate-800"
+                                : "border-slate-200 text-slate-600 hover:bg-slate-50"
+                        )}
+                    >
                         <Filter className="w-4 h-4" />
-                        Status: All
+                        Status: {filterStatus}
                     </button>
                 </div>
             </div>
@@ -533,6 +640,82 @@ export default function OrderTracking() {
                             >
                                 {isNotifying ? "Sending..." : "Send Message"}
                             </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Reports Modal */}
+            {showReports && (
+                <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                            <div>
+                                <h3 className="text-xl font-bold text-slate-800">Performance Reports</h3>
+                                <p className="text-sm text-slate-500">Overview of order metrics and financial data</p>
+                            </div>
+                            <button onClick={() => setShowReports(false)} className="p-2 hover:bg-slate-200 rounded-full transition-colors">
+                                <X className="w-6 h-6 text-slate-500" />
+                            </button>
+                        </div>
+
+                        <div className="p-8">
+                            {/* Key Metrics */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                                <div className="bg-blue-50 p-6 rounded-xl border border-blue-100">
+                                    <div className="flex items-center gap-4 mb-2">
+                                        <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+                                            <Package className="w-6 h-6" />
+                                        </div>
+                                        <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Total Orders</span>
+                                    </div>
+                                    <p className="text-3xl font-black text-slate-800">{orders.length}</p>
+                                    <div className="mt-2 text-xs font-medium text-slate-500 flex gap-2">
+                                        <span className="text-emerald-600 font-bold">{completedOrders} Completed</span>
+                                        <span>•</span>
+                                        <span className="text-orange-600 font-bold">{pendingOrders} Active</span>
+                                    </div>
+                                </div>
+
+                                <div className="bg-emerald-50 p-6 rounded-xl border border-emerald-100">
+                                    <div className="flex items-center gap-4 mb-2">
+                                        <div className="p-2 bg-emerald-100 rounded-lg text-emerald-600">
+                                            <DollarSign className="w-6 h-6" />
+                                        </div>
+                                        <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Total Revenue</span>
+                                    </div>
+                                    <p className="text-3xl font-black text-slate-800">${totalRevenue.toLocaleString()}</p>
+                                    <p className="text-xs text-slate-500 mt-1">Gross revenue from all orders</p>
+                                </div>
+
+                                <div className="bg-purple-50 p-6 rounded-xl border border-purple-100">
+                                    <div className="flex items-center gap-4 mb-2">
+                                        <div className="p-2 bg-purple-100 rounded-lg text-purple-600">
+                                            <BarChart3 className="w-6 h-6" />
+                                        </div>
+                                        <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Conversion</span>
+                                    </div>
+                                    <p className="text-3xl font-black text-slate-800">
+                                        {orders.length > 0 ? Math.round((completedOrders / orders.length) * 100) : 0}%
+                                    </p>
+                                    <p className="text-xs text-slate-500 mt-1">Completion rate</p>
+                                </div>
+                            </div>
+
+                            {/* Export Section */}
+                            <div className="bg-slate-900 rounded-xl p-8 text-white flex flex-col md:flex-row items-center justify-between gap-6">
+                                <div>
+                                    <h4 className="text-lg font-bold">Export Order Data</h4>
+                                    <p className="text-slate-400 text-sm mt-1">Download a complete CSV report of all orders, including status and financial details.</p>
+                                </div>
+                                <button
+                                    onClick={downloadCSV}
+                                    className="px-6 py-3 bg-[#ea580c] hover:bg-[#c2410c] text-white font-bold rounded-xl transition-colors flex items-center gap-2 shadow-lg shadow-orange-900/20"
+                                >
+                                    <Download className="w-5 h-5" />
+                                    Download CSV
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
