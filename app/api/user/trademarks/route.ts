@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import db from "@/lib/db";
 
 export async function GET() {
     const session = await getSession();
@@ -10,6 +9,9 @@ export async function GET() {
     }
 
     try {
+        // Lazy-load Prisma
+        const { default: db } = await import('@/lib/db');
+
         const trademarks = await db.trademark.findMany({
             where: { userId: session.user.id },
             orderBy: { updatedAt: 'desc' }
@@ -31,6 +33,9 @@ export async function POST(request: Request) {
     try {
         const body = await request.json();
         const { name, type, serialNumber } = body;
+
+        // Lazy-load Prisma if not already loaded
+        const { default: db } = await import('@/lib/db');
 
         const trademark = await db.trademark.create({
             data: {

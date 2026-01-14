@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
 import bcrypt from "bcryptjs";
 
 export async function GET() {
     try {
+        // Lazy-load Prisma
+        const { prisma } = await import('@/lib/db');
+
         // Fetch all users with role 'client'
         const users = await prisma.user.findMany({
             where: {
@@ -50,6 +52,9 @@ export async function POST(req: Request) {
         if (!email || !password) {
             return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
         }
+
+        // Lazy-load Prisma
+        const { prisma } = await import('@/lib/db');
 
         const existingUser = await prisma.user.findUnique({
             where: { email }

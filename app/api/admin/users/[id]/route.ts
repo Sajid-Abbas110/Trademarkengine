@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
 
 export async function PATCH(
     req: Request,
@@ -11,6 +10,9 @@ export async function PATCH(
         const { name, email, role } = body;
 
         console.log(`[PATCH] Updating User: ${id}`, { name, email, role });
+
+        // Lazy-load Prisma
+        const { prisma } = await import('@/lib/db');
 
         const updatedUser = await prisma.user.update({
             where: { id },

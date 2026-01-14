@@ -8,11 +8,19 @@ const globalForPrisma = globalThis as unknown as {
 
 // Prisma 7 requires an adapter to be passed to the constructor
 const prisma = globalForPrisma.prisma ?? (() => {
-    // Check if we're using PostgreSQL (Vercel/production)
-    // In Vercel, POSTGRES_PRISMA_URL is automatically set when you create a Postgres database
-    const postgresUrl = process.env.POSTGRES_PRISMA_URL || process.env.DATABASE_URL
+    // Attempt to detect a PostgreSQL connection URL
+    // Check common env var names and be permissive for 'postgres' or 'postgresql' schemes
+    const postgresUrl =
+        process.env.POSTGRES_PRISMA_URL ||
+        process.env.DATABASE_URL ||
+        process.env.POSTGRES_URL ||
+        process.env.VERCEL_POSTGRES_URL
 
-    if (postgresUrl && postgresUrl.startsWith('postgres')) {
+    const isPostgres =
+        typeof postgresUrl === 'string' &&
+        /^(postgres(?:ql)?)(:\/\/{2}|:)/i.test(postgresUrl)
+
+    if (isPostgres) {
         // Use PostgreSQL adapter
         const pool = new Pool({ connectionString: postgresUrl })
         const adapter = new PrismaPg(pool)
@@ -20,6 +28,11 @@ const prisma = globalForPrisma.prisma ?? (() => {
             adapter,
             log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
         })
+    } else if (process.env.NODE_ENV === 'production') {
+        // In production we must have a PostgreSQL URL available; fail fast with a clear error
+        throw new Error(
+            'No PostgreSQL connection URL detected in production. Set DATABASE_URL (or POSTGRES_PRISMA_URL).'
+        )
     } else {
         // Use SQLite for local development
         const { PrismaBetterSqlite3 } = require('@prisma/adapter-better-sqlite3')

@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
 
 export async function GET(req: Request) {
     try {
         // In a real app, verify Admin session here
+
+        // Lazy-load Prisma
+        const { prisma } = await import('@/lib/db');
 
         // Fetch all requests, newest first
         const requests = await prisma.serviceRequest.findMany({

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { getSession, hashPassword, comparePassword } from "@/lib/auth";
-import db from "@/lib/db";
 
 export async function POST(request: Request) {
     const session = await getSession();
@@ -12,6 +11,9 @@ export async function POST(request: Request) {
     try {
         const body = await request.json();
         const { currentPassword, newPassword } = body;
+
+        // Lazy-load Prisma
+        const { default: db } = await import('@/lib/db');
 
         const user = await db.user.findUnique({
             where: { id: session.user.id },

@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import prisma from "@/lib/db";
 import { getSession } from "@/lib/auth";
 import bcrypt from "bcryptjs";
 import { randomBytes } from "crypto";
@@ -11,6 +10,9 @@ export async function POST(req: Request) {
 
         const body = await req.json();
         const { type, data, userId } = body;
+
+        // Lazy-load Prisma
+        const { default: prisma } = await import('@/lib/db');
 
         let serviceUserId = userId;
         let isNewUser = false;

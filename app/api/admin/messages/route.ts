@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import prisma from "@/lib/db";
 import { getSession } from "@/lib/auth";
 
 export async function POST(req: Request) {
@@ -11,6 +10,9 @@ export async function POST(req: Request) {
 
         const body = await req.json();
         const { serviceRequestId, receiverId, content } = body;
+
+        // Lazy-load Prisma to prevent DB initialization at module import/build time
+        const { default: prisma } = await import('@/lib/db');
 
         if (!serviceRequestId || !receiverId || !content) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
