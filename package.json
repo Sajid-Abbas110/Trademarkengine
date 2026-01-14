@@ -13,7 +13,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@prisma/client": "^7.2.0",
+    "@prisma/client": "^5.10.2",
     "@radix-ui/react-accordion": "^1.2.12",
     "bcryptjs": "^3.0.3",
     "better-sqlite3": "^12.5.0",
@@ -37,7 +37,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
-    "prisma": "^7.2.0",
+    "prisma": "^5.10.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
